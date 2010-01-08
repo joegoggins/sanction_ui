@@ -1,1 +1,1 @@
-# Include hook code here
+require 'sanction_ui'

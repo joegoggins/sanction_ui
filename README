@@ -1,8 +1,19 @@
 Sanction-UI
 ===========
 
-Sanction UI is a Graphical Interface Rails Engine to sit ontop of your Sanction settings, allowing easy control and management
-of your users and permissions.  
+Sanction UI is a Graphical Interface Rails Engine to sit ontop of your Sanction settings, allowing easy control and management of your users and permissions.  
+
+Example Routes
+
+
+grant/user_type/user_id/role
+revoke/user_type/user_id/role
+
+grant/principle_type/principle_id/role/permissionable_type/permissionable_id
+revoke/user_type/user_id/role
+
+
+sanction_ui/
 
 
 

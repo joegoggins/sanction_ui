@@ -1,1 +1,2 @@
-# Sanction-ui
+module SanctionUi
+end
