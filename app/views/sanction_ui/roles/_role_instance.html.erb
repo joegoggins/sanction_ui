@@ -1,6 +1,8 @@
 <li>
 <% if role_definition.global? -%>
-	<%= role.principal.name -%>
+	<% if role.principal_valid? -%>
+ 	  <%= role.principal.name %>
+	<% end -%>
 	<% if role_definition.principals.length > 1 -%>
 		(<%= role.principal_type.underscore.humanize %>)
 	<% end -%>
@@ -15,13 +17,13 @@
 	<span>REMOVE PRINCIPAL LINK</span>
 	<span><%= labels[:over] -%></span>
 	<% if role.permissionable_id.blank? && (not role.permissionable_type.blank?)  %>
-	
+	   all <%= role.permissionable_type.to_s.pluralize %>
 	<% else %>
-	<span><%= role.permissionable.name -%></span>
-	<% if role_definition.principals.length > 1 -%>
-			<span>(<%= role.permissionable_type.underscore.humanize %>)</span>
-	<% end -%>
-	
+		<span><%= role.permissionable.name -%></span>
+		<% if role_definition.principals.length > 1 -%>
+				<span>(<%= role.permissionable_type.underscore.humanize %>)</span>
+		<% end -%>
+	<% end %>
 	<span>REMOVE PERMISSIONALBE LINK</span>
 <% end -%>
 </li>
