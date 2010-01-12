@@ -1,0 +1,27 @@
+<h2>Granular Roles</h2>
+<ul class="suiNonGlobalRolesList">
+<% 3.times do |role_definition| -%>
+  <li>
+	  <span>ROLE DEF<%# render :partial => "role_definition_in_list", :locals => {:role_definition => role_definition} %></span>
+	  <span>LINK TO ADD<%# link_to labels[:add_principal_for_global_role], new_sanction_ui_role_path %></span>
+	  <ul class="suiNonGlobalPrincipalsList">
+		  <% 5.times do |principal| -%>
+		    <li>
+			    <span>PRINCIPAL NAME</span>
+			    <span>(PRINCIPAL CLASS NAME)</span>
+			    <span>REMOVE PRINCIPAL LINK</span>
+			    <ul class="suiNonGlobalPermissionablesList">
+			    <% 2.times do |permissionable| -%>
+			      <li>
+				      <span>PERMISSIONABLE NAME</span>
+      				<span>(PERMISSIONABLE CLASS NAME)</span>
+      				<span>REMOVE PERMISSIONALBE LINK</span>
+            </li>
+			    <% end -%>
+			    </ul> <%# end of suiNonGlobalPermissionablesList -%>
+			</li> <%# end of specific principal item -%>
+		  <% end -%>
+	  </ul> <%# end of suiNonGlobalPrincipalsList -%>
+	</li> <%# end of specific role -%>
+<% end -%>
+</ul> <%# end of suiNonGlobalRolesList -%>
