@@ -1,6 +1,6 @@
 <h2>Global Roles</h2>
-<ul class="suiGlobalRolesList">
-<% Sanction::Role::Definition.global_roles.each do |role_definition| -%>
+<ul class="suiRolesList">
+<% Sanction::Role::Definition.all_roles.each do |role_definition| -%>
   <li>
 	  <span><%= render :partial => "role_definition_in_list", :locals => {:role_definition => role_definition} %></span>
 	  <% if can_add_principal_for_global_role?(role_definition) -%>
