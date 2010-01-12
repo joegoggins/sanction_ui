@@ -1,0 +1,43 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+  <title>TODO_PAGE_TITLE</title>	
+</head>
+
+<body>
+<div id="suiContainer">
+	<h1>TODO_PAGE_HEADER (LIST PEOPLE ALPHABETICALLY)</h1>
+	<ul class="suiIndexLinksList">
+		<li><%= link_to "Describe Permissions Configuration", '#' %></li>
+		<li><%= link_to "List People Alphabetically", '#' %></li>
+		<li><%= link_to "List People by Role", '#' %></li>
+		<%# TODO: You would render these two links for each Principle class %>
+	</ul>
+
+	<ul class="suiPeopleIndexList">
+		<li>Joe Goggins
+	    <ul class="suiRolesForPersonList">
+	    	<li><a href="#">Super User</a> <%= link_to "remove",'#' %></li>
+		  </ul>
+		</li>
+		<li>Pete Leonhardt
+	    <ul class="suiRolesForPersonList">
+	    	<li>Editor <%= link_to "remove",'#' %> for
+		      <ul class="suiPermissionablesForRoleList">
+			      <li>SOME MAGAZINE</li>
+			    </ul>
+		    </li>
+		  </ul>
+		</li>
+		<li>Matt Vermaak
+	    <ul class="suiRolesForPersonList">
+	    	<li>Boss <%= link_to "remove",'#' %> for TODO_ALL_USERS</li>
+		  </ul>
+		</li>
+	</ul>
+</div>
+</body>
+</html>

@@ -1,6 +1,18 @@
-<h1>Welcome to Sanction UI</h1>
+<h1>Welcome to Sanction UI: A Permissions Management System</h1>
+<p>This page provides a centralized place to manage access control to this application.</p>
+<h2>Options</h2>
 <ul>
-	<li>I want to add a global permission <%= link_to "Go!", new_sanction_ui_role_path(:global => true) %></li>
-    <li>I want to add a permission over some object <%= link_to "Go!", new_sanction_ui_role_path %></li>
-    <li>I want know how the permission system is configured <%= link_to "Go!", sanction_ui_describe_path %></li>
+  <li><%= link_to "Describe", sanction_ui_describe_path %>: Describe how the permission system is configured.</li>	
+	<li><%= link_to "List People by Role", sanction_ui_roles_path %>: Great for seeing what roles &amp; actions are accessible to people.</li>
+	<li><%= link_to "List People Alphabetically", '#' %>: Great for seeing who is able to access the system.</li>
 </ul>
+
+
+<h2>Mocks</h2>
+<ul>
+	<li><%= link_to "add a role", sanction_ui_asset_path('mocks/add_role.html' )%></li>
+
+	<li><%= link_to "people index", sanction_ui_asset_path('mocks/people_index.html' )%></li>
+	<li><%= link_to "roles index", sanction_ui_asset_path('mocks/roles_index.html' )%></li>
+</ul>
+<ul>

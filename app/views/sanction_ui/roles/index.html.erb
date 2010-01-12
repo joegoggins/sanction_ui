@@ -1,1 +1,104 @@
-not implemented yet, the list of all roles
+<%#
+Renders a nested list like:
+ROLE: Super user
+  joe
+ROLE: Reader
+  matt
+    Access over all Magazines
+ROLE: Editor
+  pete
+    Wall Street Journal
+    The Economist asf
+ROLE: Writer
+ROLE: Owner
+ROLE: Boss
+  matt
+    joe (User)
+
+
+
+
+suiRolesList
+  suiPrincipalList
+    suiPermissionalblesList
+
+
+
+-%>
+<div class="suiContainer">
+<%= render :partial => "header", :locals => {:roles => @roles} -%>
+  <ul class="suiRolesList">
+<% Sanction::Role::Definition.names.each do |role_name| # [:super_user, :writer, :viewer] -%>
+    <li id="suiRole<%= role_name.to_s %>">
+      <span class="suiRoleName"><%= render :partial => "role_name", :locals => {:role_name => role_name} -%></span>
+        <ul class="suiPrincipalList">
+  <% # Is this a global role definition?
+     #
+  if Sanction::Role::Definition.with(role_name).first.global?
+    @global_roles = @roles.find_all {|r| r.name.to_sym == role_name}
+    @global_roles.each do |global_role| -%>
+        <li><%= render :partial => "principal_name", :locals => {:role => global_role} -%></li>
+  <%  end -%>
+      </ul><%# end of suiPrincipalList%>
+    </li><%# end of <li id="suiRole" %>
+  <%  next # SKIP THE REST OF THIS CODE IF GLOBAL PERM...Sanction::Role::Definition.names.each loop
+  end -%>
+  <% 
+  # Only non-globals execute these nested loops below
+  #
+  Sanction::Role::Definition.with(role_name).each do |role_def| 
+    role_def.principals.each do |principal_class| # ["User", "ApiUser"]
+      role_def.permissionables.each do |permissionable_class| # ["Magazine", "User"] 
+        # filter the list of all roles
+        #
+        @actual_roles = @roles.find_all {|r|
+           r.name.to_sym == role_def.name && 
+           r.principal_type.to_s == principal_class &&
+           r.permissionable_type.to_s == permissionable_class
+        }
+        # Sorting is key here, so we always render in deterministic order
+        #
+        @actual_roles.sort! {|a,b| "#{a.principal_type} #{a.permissionable_type}" <=> "#{b.principal_type} #{b.permissionable_type}"}
+        
+        # Only render the name once
+        rendered_principal_ids = []
+        @actual_roles.each do |granular_role| -%>
+          <li>
+          <%- unless rendered_principal_ids.include? granular_role.principal_id -%>
+
+            <% if granular_role.principal.blank? -%>
+              <%= render :partial => "invalid_principal", :locals => {:role => granular_role} -%>
+            <% else 
+              if role_def.principals.length > 1 -%>
+               <%= render :partial => "principal_name", :locals => {:role => granular_role} -%><%= render :partial => "principal_type", :locals => {:role => granular_role} -%>
+            <% else -%>
+								<%= render :partial => "principal_name", :locals => {:role => granular_role} -%> 
+            <% end 
+              rendered_principal_ids << granular_role.principal_id
+            end # end of unless rendered_principal_ids.include? granular_role.principal_id
+            -%>
+            
+            <% 
+          end 
+          
+          if granular_role.permissionable.blank? -%>
+            <%= render :partial => "permissionable_access_over_all", :locals => {:role => granular_role} -%>
+          <% else 
+            # Indicate the class if there are multiple types of permissionables
+            #
+             if role_def.permissionables.length > 1 -%>
+               <%= render :partial => "permissionable_name", :locals => {:role => granular_role} -%><%= render :partial => "permissionable_type", :locals => {:role => granular_role} -%>
+            <% else -%>
+              <%= render :partial => "permissionable_name", :locals => {:role => granular_role} -%>
+            <% end
+          end -%>
+          </li>
+        <% end  # end of @actual_roles loop    
+      end
+    end
+  end -%>
+    </li> <%# end of suiRoleElement -%>
+<%- end -%>
+  </ul> <%# end of suiRolesList -%>
+</div> <%# end of suiContainer -%>
+<%= render :partial => 'footer', :locals => {:roles => @roles} -%>

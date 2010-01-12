@@ -28,6 +28,8 @@ class SanctionUi::AssetController < ApplicationController
           'image/png'
         when 'css':
           'text/css'
+        when 'html':
+          'text/html'
         when 'js':
           'text/javascript'
         else
