@@ -1,9 +1,0 @@
-<li>
-<%= role.principal.name -%>
-<% if role_definition.principals.length > 1 -%>
-	(<%= role.principal_type.underscore.humanize %>)
-<% end -%>
-<% if can_remove_principal_for_global_role?(role_definition) -%>
-  <%= link_to labels[:stub], sanction_ui_role_path(role), :method => :delete %>
-<% end -%>
-</li>

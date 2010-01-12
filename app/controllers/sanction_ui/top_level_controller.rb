@@ -15,7 +15,8 @@ class SanctionUi::TopLevelController < ApplicationController
   
   def labels
     {:add_principal_for_global_role => "add",
-     :stub => 'stub'
+     :stub => 'stub',
+     :over => '<em>over</em>'
      }
   end
   helper_method :labels
