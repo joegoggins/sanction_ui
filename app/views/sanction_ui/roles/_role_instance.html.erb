@@ -1,29 +1,32 @@
 <li>
-<% if role_definition.global? -%>
-	<% if role.principal_valid? -%>
- 	  <%= role.principal.name %>
-	<% end -%>
-	<% if role_definition.principals.length > 1 -%>
-		(<%= role.principal_type.underscore.humanize %>)
-	<% end -%>
-	<% if can_remove_principal_for_global_role?(role_definition) -%>
-	  <%= link_to labels[:stub], sanction_ui_role_path(role), :method => :delete %>
-	<% end -%>
+<% if role.principal_valid? -%>
+  <%= role.principal.name %>
 <% else -%>
-	<span><%= role.principal.name -%></span>
-	<% if role_definition.principals.length > 1 -%>
-			<span>(<%= role.principal_type.underscore.humanize %>)</span>
-	<% end -%>
-	<span>REMOVE PRINCIPAL LINK</span>
+  Invalid principal for <%= role.principal_type %>.<%= role.principal_id %>
+<% end -%>
+<% if role_definition.principals.length > 1 -%>
+	(<%= role.principal_type.underscore.humanize %>)
+<% end -%>
+<% if can_remove_principal_for_global_role?(role_definition) -%>
+  <%= link_to labels[:remove_principal], sanction_ui_role_path(role), :method => :delete %>
+<% end -%>
+	
+<% unless role_definition.global? -%>
 	<span><%= labels[:over] -%></span>
-	<% if role.permissionable_id.blank? && (not role.permissionable_type.blank?)  %>
-	   all <%= role.permissionable_type.to_s.pluralize %>
-	<% else %>
+	<% if role.permissionable_over_all? -%>
+	   all <%= role.permissionable_type.to_s.pluralize -%>
+	<% elsif role.permissionable_valid? -%>
 		<span><%= role.permissionable.name -%></span>
 		<% if role_definition.principals.length > 1 -%>
 				<span>(<%= role.permissionable_type.underscore.humanize %>)</span>
 		<% end -%>
-	<% end %>
-	<span>REMOVE PERMISSIONALBE LINK</span>
+ 	  <% if can_remove_principal_for_global_role?(role_definition) -%>
+		  <%= link_to labels[:remove_role], sanction_ui_role_path(role), :method => :delete %>
+		<% end -%>
+  <% else -%>
+    Invalid permissionable for <%= role.permissionable_type %>.<%= role.permissionable_id %>
+	<% end -%>
+
+	
 <% end -%>
 </li>

@@ -14,9 +14,11 @@ class SanctionUi::TopLevelController < ApplicationController
   helper_method :can_remove_principal_for_global_role?
   
   def labels
-    {:add_principal_for_global_role => "add",
+    {:add_principal_for_global_role => "+",
      :stub => 'stub',
-     :over => '<em>over</em>'
+     :over => '<em>over</em>',
+     :remove_principal => "-", # Removes from all roles for a given role def
+     :remove_role => "-" # removes just the most granular role
      }
   end
   helper_method :labels
