@@ -60,13 +60,12 @@ suiRolesList
         #
         @actual_roles.sort! {|a,b| "#{a.principal_type} #{a.permissionable_type}" <=> "#{b.principal_type} #{b.permissionable_type}"}
         
-        # Only render the name once
+        # Only render the name once and open up the <li> once for a person
         rendered_principal_ids = []
         @actual_roles.each do |granular_role| -%>
-          <li>
           <%- unless rendered_principal_ids.include? granular_role.principal_id -%>
-
-            <% if granular_role.principal.blank? -%>
+             <li>
+             <% if granular_role.principal.blank? -%>
               <%= render :partial => "invalid_principal", :locals => {:role => granular_role} -%>
             <% else 
               if role_def.principals.length > 1 -%>
@@ -75,13 +74,15 @@ suiRolesList
 								<%= render :partial => "principal_name", :locals => {:role => granular_role} -%> 
             <% end 
               rendered_principal_ids << granular_role.principal_id
-            end # end of unless rendered_principal_ids.include? granular_role.principal_id
+            end # end of if granular_role.principal.blank? 
+                # Now open up the permissions list<ul>
             -%>
-            
+            <ul class="suiPermissionablesList">
             <% 
-          end 
-          
-          if granular_role.permissionable.blank? -%>
+          end  # end of unless rendered_principal_ids.include? granular_role.principal_id
+          %>
+          <li>
+          <%- if granular_role.permissionable.blank? -%>
             <%= render :partial => "permissionable_access_over_all", :locals => {:role => granular_role} -%>
           <% else 
             # Indicate the class if there are multiple types of permissionables
@@ -92,9 +93,14 @@ suiRolesList
               <%= render :partial => "permissionable_name", :locals => {:role => granular_role} -%>
             <% end
           end -%>
-          </li>
-        <% end  # end of @actual_roles loop    
-      end
+          HERE</li>
+          
+        <% end # end of @actual_roles loop    
+         -%>
+           </ul> <%# suiPermissionablesList%>
+         </li>
+       </ul> <%# suiPrincipalList %>
+      <% end
     end
   end -%>
     </li> <%# end of suiRoleElement -%>
