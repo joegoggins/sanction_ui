@@ -43,9 +43,6 @@ end
 	  else
 		[]
 	  end
-=begin
-
-=end
     -%>
     <li id="suiRole<%= role_name.to_s %>">
       <span class="suiRoleName">
@@ -54,36 +51,49 @@ end
           <%= render :partial => 'global_label', :locals => {:role_name => role_name} %>
 	    <% end -%>
       </span>
-      <% if @global_role_instances.empty? && @is_global -%>
-        <%= render :partial => 'no_principals_for_role', :locals => {:role_name => role_name} %>
-	  <% else -%>
-        <ul class="suiPrincipalList">
-	    <% @global_role_instances.each do |role| -%>
-          <li><%= render :partial => "principal_name", :locals => {:role => role} -%></li>	  
-	    <% end -%>
-        </ul><%# end of suiPrincipalList%>
-      </li><%# end of <li id="suiRole" %>
+      <% if @is_global %>
+        <% if @global_role_instances.empty? -%>
+          <%= render :partial => 'no_principals_for_role', :locals => {:role_name => role_name} %>
+  	    <% else -%>
+          <ul class="suiPrincipalList">
+	      <% @global_role_instances.each do |role| -%>
+            <li><%= render :partial => "principal_name", :locals => {:role => role} -%></li>	  
+	      <% end -%>
+          </ul><%# end of suiPrincipalList%>
+        <% end -%>
+      <% else -%>
+         NON GLOBAL
       <% end -%>
+      </li><%# end of <li id="suiRole" %>
   <% 
 
-  def non_global_roles_helper
-	Sanction::Role::Definition.with(role_name).each do |role_def| 
-	  role_def.principals.each do |principal_class| # ["User", "ApiUser"]
-	    role_def.permissionables.each do |permissionable_class| # ["Magazine", "User"] 
-	      actual_roles = @roles.find_all {|r|
+  def s(rd,pr,pe)
+		actual_roles = @roles.find_all {|r|
 	         r.name.to_sym == role_def.name && 
 	         r.principal_type.to_s == principal_class &&
 	         r.permissionable_type.to_s == permissionable_class
 	      }
 	      # Sorting is key here, so we always render in deterministic order
 	      actual_roles.sort! {|a,b| "#{a.principal_type} #{a.permissionable_type}" <=> "#{b.principal_type} #{b.permissionable_type}"}
-	      yield role_def, principal_class, permissionable_class, actual_roles
+  end
+
+  def non_global_roles_helper(role_name)
+	Sanction::Role::Definition.with(role_name).each do |role_def| 
+	  role_def.principals.each do |principal_class| # ["User", "ApiUser"]
+	    role_def.permissionables.each do |permissionable_class| # ["Magazine", "User"] 
+	      yield role_def, principal_class, permissionable_class
 	    end
 	  end
 	end
   end
-end
+
 %>
-    </ul> <%# end of suiRolesList -%>
+
+    <% non_global_roles_helper(role_name) do |role_def, principal_class, permissionable_class| -%>
+
+	<% end -%>
+
+  <% end -%><%# end of the top level list %>
+  </ul> <%# end of suiRolesList -%>
 </div> <%# end of suiContainer -%>
 <%= render :partial => 'footer', :locals => {:roles => @roles} -%>
