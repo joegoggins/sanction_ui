@@ -1,8 +1,8 @@
 Description:
-    Explain the generator
+    This creates a folder inside of RAILS_ROOT/app/sanction_ui with sub-dir's that you can drop files
+    with the same relative path as those within the plugin to override.
+
+    See lib/sanction_ui.rb for other overridable items
 
 Example:
-    ./script/generate sanction_ui Thing
-
-    This will create:
-        what/will/it/create
+    ./script/generate sanction_ui
