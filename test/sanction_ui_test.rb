@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class Sanction-uiTest < ActiveSupport::TestCase
+class SanctionUiTest < ActiveSupport::TestCase
   # Replace this with your real tests.
   test "the truth" do
     assert true

@@ -14,9 +14,7 @@ class SanctionUi::AssetController < ApplicationController
     else
       @relative_path = params[:relative_path].join('/')
 
-# TODO: change to sanction_ui instead of sanction-ui
-
-      @full_path = "#{RAILS_ROOT}/vendor/plugins/sanction-ui/app/assets/#{@relative_path}"
+      @full_path = "#{RAILS_ROOT}/vendor/plugins/sanction_ui/app/assets/#{@relative_path}"
       @overridden_path = "#{RAILS_ROOT}/app/views/sanction_ui/#{@relative_path}"      
       @file_extention = params[:relative_path].last.split('.').last
       @mime_type = case @file_extention
