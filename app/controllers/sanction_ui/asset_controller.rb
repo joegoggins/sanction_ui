@@ -1,7 +1,7 @@
 # This serves up static assets
 # it interpolates css files through erb first
 #
-class SanctionUi::AssetController < ApplicationController
+class SanctionUi::AssetController < SanctionUi::TopLevelController
   # Skip all authorization requirements here
   skip_filter filter_chain
   # This is used to serve up all css, js, and images--you could override
@@ -13,9 +13,8 @@ class SanctionUi::AssetController < ApplicationController
              :status => 404 and return
     else
       @relative_path = params[:relative_path].join('/')
-
-      @full_path = "#{RAILS_ROOT}/vendor/plugins/sanction_ui/app/assets/#{@relative_path}"
-      @overridden_path = "#{RAILS_ROOT}/app/views/sanction_ui/#{@relative_path}"      
+      @full_path = "#{SanctionUi.plugin_base_path}/app/assets/#{@relative_path}"
+      @overridden_path = "#{SanctionUi.asset_override_base_path}/#{@relative_path}"      
       @file_extention = params[:relative_path].last.split('.').last
       @mime_type = case @file_extention
         when 'gif':
