@@ -25,4 +25,12 @@ class SanctionUi::TopLevelController < ApplicationController
   end
   helper_method :role_instances_for_global_role
   
+  
+  def role_instances_for_non_global_role_and_principal(roles, role_definition, principal_class)
+    roles.find_all {|r|
+      r.name.to_sym == role_definition.name && 
+      r.principal_type.to_s == principal_class.to_s 
+    }
+  end
+  helper_method :role_instances_for_non_global_role_and_principal
 end
