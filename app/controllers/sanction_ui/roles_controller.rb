@@ -15,5 +15,7 @@ class SanctionUi::RolesController < SanctionUi::AuthController
   end
 
   def destroy
+    @role = Sanction::Role.find(params[:id])
+    render :inline => "NOT IMPLEMENTED Gonna delete <%= debug @role %>" and return
   end
 end

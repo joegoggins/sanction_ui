@@ -1,0 +1,14 @@
+<h2>Global Roles</h2>
+<ul class="suiGlobalRolesList">
+<% Sanction::Role::Definition.global_roles.each do |role_definition| -%>
+  <li>
+	  <span><%= render :partial => "role_definition_in_list", :locals => {:role_definition => role_definition} %></span>
+	  <% if can_add_principal_for_global_role?(role_definition) -%>
+  	  <span><%= link_to labels[:add_principal_for_global_role], new_sanction_ui_role_path %></span>
+    <% end -%>
+	  <ul>
+	    <%= render :partial => 'principal_for_global_role', :collection => role_instances_for_global_role(@roles, role_definition), :as => :role, :locals => {:role_definition => role_definition} %>
+	  </ul>
+	</li>
+<% end -%>
+</ul> <%# end of suiGlobalRolesList -%>
