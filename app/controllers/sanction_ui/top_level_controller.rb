@@ -30,7 +30,7 @@ class SanctionUi::TopLevelController < ApplicationController
     roles.find_all {|r|
       r.name.to_sym == role_definition.name && 
       r.principal_type.to_s == principal_class.to_s 
-    }
+    }.sort {|a,b| "#{a.principal_type} #{a.permissionable_type}" <=> "#{b.principal_type} #{b.permissionable_type}"}
   end
   helper_method :role_instances_for_non_global_role_and_principal
 end
