@@ -7,9 +7,10 @@
 <% if role_definition.principals.length > 1 -%>
 	(<%= role.principal_type.underscore.humanize %>)
 <% end -%>
-<% if can_remove_principal_for_global_role?(role_definition) -%>
-  <%= link_to labels[:remove_principal], sanction_ui_role_path(role), :method => :delete %>
-<% end -%>
+<%# Don't think this is needed for now %>
+<%# if action_allowed?(:can_remove_principal, :role => role) -%>
+  <%# link_to labels[:remove_principal], sanction_ui_role_path(role), :method => :delete %>
+<%# end -%>
 	
 <% unless role_definition.global? -%>
 	<span><%= labels[:over] -%></span>
@@ -20,13 +21,11 @@
 		<% if role_definition.principals.length > 1 -%>
 				<span>(<%= role.permissionable_type.underscore.humanize %>)</span>
 		<% end -%>
- 	  <% if can_remove_principal_for_global_role?(role_definition) -%>
+ 	  <% if action_allowed?(:can_remove_role, :role => role) -%>
 		  <%= link_to labels[:remove_role], sanction_ui_role_path(role), :method => :delete %>
 		<% end -%>
   <% else -%>
     Invalid permissionable for <%= role.permissionable_type %>.<%= role.permissionable_id %>
-	<% end -%>
-
-	
+	<% end -%>	
 <% end -%>
 </li>
