@@ -1,0 +1,9 @@
+<%= sui_label :permissionable_type -%>
+<%- if @role_definition.permissionables.length > 1 -%>
+  <%= form.collection_select :permissionable_type, @role_definition.permissionables,:to_s,:to_s -%>
+<%- else -%>
+  <%- @role.permissionable_type = @role_definition.permissionables.first %>
+  <%= @role.permissionable_type.humanize %>
+  <%= form.hidden_field :permissionable_type -%>
+<%- end -%>
+<br />
