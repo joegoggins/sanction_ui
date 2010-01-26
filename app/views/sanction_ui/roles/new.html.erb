@@ -1,10 +1,12 @@
 <%# debug @role_definition  -%>
 <%# debug @role  -%>
+<div class="suiContainer">
 <%= render :partial => 'new_header' %>
 <% form_for(@role, :url => sanction_ui_roles_path) do |form| %>
   <%= form.error_messages %>
   <%= hidden_field_tag 'role_definition', @role_definition.name %>
   <%- ['principal_type','principal_id'].each do |p| -%>
+  <p>
     <%=
     begin
 	    render :partial => "new_#{p}", :locals => {:form => form} # OPTIONALLY OVERRIDEN IN APP
@@ -12,9 +14,12 @@
 		  render :partial => "new_default_#{p}", :locals => {:form => form}
 	  end 
     %>
+	</p>
   <%- end -%>
+  
   <%- unless @role_definition.global? -%>
 	  <% ['permissionable_type','permissionable_id'].each do |p| -%>
+	  <p>
 	    <%=
 		  begin
 			  render :partial => "new_#{p}", :locals => {:form => form} # OPTIONALLY OVERRIDEN IN APP
@@ -22,7 +27,9 @@
 				render :partial => "new_default_#{p}", :locals => {:form => form}
 			end 
 		  %>
+		  </p>
 	  <%- end -%>
   <%- end -%>
-  <%= form.submit "Add" %>
+ <p> <%= form.submit "Add" %></p>
 <% end -%>
+</div>

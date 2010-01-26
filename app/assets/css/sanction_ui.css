@@ -1,12 +1,18 @@
 /* CSS General CSS for the Sanction UI module */
 
 
+body{
+	
+	 
+	
+}
+
+
 
 
 
  .suiContainer{
-	 /* GENERAL TEXT STYLES */
-	 font-family:Tahoma, Geneva, sans-serif;
+	font-family:Tahoma, Geneva, sans-serif;
 	 font-size:95%;
 	 color:#333;
 	 
@@ -62,3 +68,17 @@
  
   .suiContainer .suiRoleAddLink{}
   .suiContainer .suiRoleDescribeLink{}
+  
+  
+  
+  
+  
+  
+  
+  /* FORM */
+  
+ .suiContainer label, .suiContainer .suiFormLabel{
+	display:block;
+	font-weight:bold;
+	font-size:90%;
+ }
