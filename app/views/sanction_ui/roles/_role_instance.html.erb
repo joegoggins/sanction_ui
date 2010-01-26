@@ -1,31 +1,31 @@
 <li>
-<% if role.principal_valid? -%>
-  <%= role.principal.name %>
+<% if role.principal_exists? -%>
+  <%= role.principal.send(SanctionUi.principals_to_s_method) %>
 <% else -%>
   Invalid principal for <%= role.principal_type %>.<%= role.principal_id %>
 <% end -%>
+
+<%# If there is more than one type render the principal's humanized class name -%>
 <% if role_definition.principals.length > 1 -%>
 	(<%= role.principal_type.underscore.humanize %>)
 <% end -%>
-<%# Don't think this is needed for now %>
-<%# if action_allowed?(:can_remove_principal, :role => role) -%>
-  <%# link_to labels[:remove_principal], sanction_ui_role_path(role), :method => :delete %>
-<%# end -%>
-	
+
+<%# If global, show link to remove, otherwise render the permissionables the role extends over -%>
 <% unless role_definition.global? -%>
-	<span><%= labels[:over] -%></span>
+	<span><%= sui_label :over -%></span>
 	<% if role.permissionable_over_all? -%>
 	   all <%= role.permissionable_type.to_s.pluralize -%>
-	<% elsif role.permissionable_valid? -%>
-		<span><%= role.permissionable.name -%></span>
+	<% elsif role.permissionable_exists? -%>
+		<span><%= role.permissionable.send(SanctionUi.permissionables_to_s_method) -%></span>
 		<% if role_definition.principals.length > 1 -%>
 				<span>(<%= role.permissionable_type.underscore.humanize %>)</span>
-		<% end -%>
- 	  <% if action_allowed?(:can_remove_role, :role => role) -%>
-		  <%= link_to labels[:remove_role], sanction_ui_role_path(role), :method => :delete %>
 		<% end -%>
   <% else -%>
     Invalid permissionable for <%= role.permissionable_type %>.<%= role.permissionable_id %>
 	<% end -%>	
+<% end -%>
+
+<% if action_allowed?(:can_remove_role, :role => role) -%>
+  <%= link_to sui_label(:can_remove_role), sanction_ui_role_path(role), :method => :delete, :confirm => sui_label(:confirm_remove_role) %>
 <% end -%>
 </li>

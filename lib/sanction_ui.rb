@@ -13,4 +13,10 @@ module SanctionUi
   # 
   @@current_user_method = :current_user
   mattr_accessor :current_user_method
+  
+  @@principals_to_s_method = :name
+  mattr_accessor :principals_to_s_method
+    
+  @@permissionables_to_s_method = :name
+  mattr_accessor :permissionables_to_s_method
 end

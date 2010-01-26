@@ -2,5 +2,6 @@
 #
 class SanctionUi::AccessDeniedController < SanctionUi::TopLevelController
   def show
+    @role_definition = params[:role_definition]
   end
 end

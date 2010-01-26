@@ -7,8 +7,13 @@
   <title><%= render :partial => "sanction_ui/main/page_title" %></title>	
   <%= stylesheet_link_tag sanction_ui_asset_url('css/sanction_ui.css') -%>
   <%= javascript_include_tag sanction_ui_asset_url('js/sanction_ui.js') -%>
+  <%= javascript_include_tag sanction_ui_asset_url('js/jquery-1.4.min.js') -%>
 </head>
 <body>
+<% unless flash[:notice].blank? %>
+  <%= flash[:notice] %>
+<% end %>
+	
 <%= yield %>
 </body>
 </html>

@@ -3,26 +3,36 @@ Sanction UI
 Sanction UI is a Graphical Interface Rails Engine to sit ontop of your Sanction settings, allowing easy control and management of your users and permissions.  
 
 
+Requirements
+===========
+* You have a globally accessable method in controllers and views that
+  yields an instance of a Sanction principal class.
+  Default => :current_user
+  Changeable in environment.rb like:
+    SanctionUi.current_user_method = :your_method_name
+
+* Instances of permissionable and principal classes yield a concise string.
+  Default (both permissionables and principals) => :name
+  Changable via:
+
+    SanctionUi.principals_to_s_method = :your_method_name
+    SanctionUi.permissionables_to_s_method = :your_method_name
+
 Install
 ===========
 Add :having clauses to your existing sanction plugin initializer file, the following :having clauses are used
 in the engine to protect various different actions
-  * can_view_sanction_ui_index
+  * can_view_sui_index
       main/index 
-  * can_view_sanction_ui_describe 
-			main/describe 
-  * can_view_sanction_ui_roles 
+  * can_view_sui_describe 
+	  main/describe 
+  * can_view_sui_roles_index 
       roles/index 
       All permissions in the roles table
   * can_add_role
-      roles/new?role_definition=A&principal_type=X
+      roles/new
       Adds a principal to a given role 
       a wrapper around .grant
-      COULD also be a route like
-      roles/new_role_over?role_definition=A&principal_type=X 
-      For non-global roles
   * can_remove_role
-    roles/destroy (id is the role_id)
-    Remove a particular role
-
-=> 
+      roles/destroy (id is the role_id)
+      Remove a particular role

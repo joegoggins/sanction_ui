@@ -23,7 +23,6 @@ can_add_principal
 roles/destroy => can_
 =end
   def action_allowed?(access_check_method_name, options={})
-    return true
     unless respond_to? SanctionUi.current_user_method
       raise "Error: Your application controller does not implement :#{SanctionUi.current_user_method}, it must."
     end
@@ -63,16 +62,23 @@ roles/destroy => can_
   helper_method :can_remove_principal_for_global_role?
 =end
 
+  def sui_label(name)
+    if labels[name.to_sym].blank?
+      "stub"
+    else
+      labels[name.to_sym]
+    end
+  end
+  helper_method :sui_label
+  
   def labels
-    {:add_principal_for_global_role => "+",
-     :stub => 'stub',
-     :over => '<em>over</em>',
-     :remove_principal => "-", # Removes from all roles for a given role def
-     :remove_role => "-" # removes just the most granular role
+    {:can_add_role => "add",
+     :can_remove_role => "remove", 
+     :can_describe_role => "describe",
+     :confirm_remove_role => 'You sure?',
+     :over => 'over'
      }
   end
-  helper_method :labels
-  
   
   # INTERNAL HELPER METHODS
   def role_instances_for_global_role(roles, role_definition)
