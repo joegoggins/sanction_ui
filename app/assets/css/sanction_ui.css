@@ -1,31 +1,64 @@
-li {
-	color: purple;
-}
+/* CSS General CSS for the Sanction UI module */
 
-#suiRolesListContainer{
+
+
+
+
+ .suiContainer{
+	 /* GENERAL TEXT STYLES */
+	 font-family:Tahoma, Geneva, sans-serif;
+	 font-size:95%;
+	 color:#333;
+	 
+	 
+	}
 	
-}
-
- .suiContainer{}
- .suiRoleName{}
+	
+	.suiContainer ul li{
+		/*Controls the padding after each role*/
+		margin-bottom:10px;
+		list-style:none;
+		border-bottom:1px solid #ddd;
+		padding-bottom:5px;
+	}
+	
+	.suiContainer ul li ul li{
+		/* Conrtols the padding after each permsissionable */
+		margin-bottom:0px;
+		margin-top:5px;
+		list-style:circle;
+		border-bottom:none;
+		
+	}
+	
+	.suiContainer a{
+		color:#009;	
+	}
+	
+	
+	
+  .suiContainer .suiRoleName{ font-weight:bold}
  
- .suiRoleUser{}
+  .suiContainer .suiRoleUser{font-weight:bold; font-size:90%}
  
- .suiRoleUserAltName, .suiPermessionableAltName{}
+  .suiContainer.suiRoleUserAltName, .suiContainer .suiPermessionableAltName{}
  
- .suiRolePermissionbleDirection{}
- .suiPermissionable{}
- 
- 
- .suiInvalidPermissionable{}
- 
- .suiRemovePermissionableLink{}
- 
- .suiRoleOptionsContainer{}
+  .suiContainer .suiRolePermissionbleDirection{
+	  	font-style:italic;
+		color:#666;
+	}
+  .suiContainer .suiPermissionable{}
  
  
- .suiRoleOptionLink {}
+ .suiContainer .suiInvalidPermissionable{}
+ 
+  .suiContainer .suiRemovePermissionableLink{}
+ 
+  .suiContainer .suiRoleOptionsContainer{}
  
  
- .suiRoleAddLink{}
- .suiRoleDescribeLink{}
+  .suiContainer .suiRoleOptionLink {}
+ 
+ 
+  .suiContainer .suiRoleAddLink{}
+  .suiContainer .suiRoleDescribeLink{}
