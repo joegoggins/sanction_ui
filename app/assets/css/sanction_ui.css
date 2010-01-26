@@ -1,3 +1,31 @@
 li {
 	color: purple;
 }
+
+#suiRolesListContainer{
+	
+}
+
+ .suiContainer{}
+ .suiRoleName{}
+ 
+ .suiRoleUser{}
+ 
+ .suiRoleUserAltName, .suiPermessionableAltName{}
+ 
+ .suiRolePermissionbleDirection{}
+ .suiPermissionable{}
+ 
+ 
+ .suiInvalidPermissionable{}
+ 
+ .suiRemovePermissionableLink{}
+ 
+ .suiRoleOptionsContainer{}
+ 
+ 
+ .suiRoleOptionLink {}
+ 
+ 
+ .suiRoleAddLink{}
+ .suiRoleDescribeLink{}
