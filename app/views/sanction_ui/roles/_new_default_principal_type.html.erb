@@ -1,0 +1,11 @@
+
+<%- if @role_definition.principals.length > 1 -%>
+	<%= form.label :principal_type, sui_label(:principal_type) %>
+  <%= form.collection_select :principal_type, @role_definition.principals, :to_s, :to_s 
+%>
+<%- else -%>
+<span class="suiFormLabel"><%= sui_label :principal_type -%></span>
+  <%- @role.principal_type = @role_definition.principals.first %>
+  <%= @role.principal_type.humanize %>
+  <%= form.hidden_field :principal_type %>
+<%- end -%>

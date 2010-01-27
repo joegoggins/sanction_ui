@@ -14,7 +14,7 @@ class SanctionUi::AssetController < SanctionUi::TopLevelController
     else
       @relative_path = params[:relative_path].join('/')
       @full_path = "#{SanctionUi.plugin_base_path}/app/assets/#{@relative_path}"
-      @overridden_path = "#{SanctionUi.asset_override_base_path}/#{@relative_path}"      
+      @overridden_path = "#{SanctionUi.asset_override_base_path}/#{@relative_path}"
       @file_extention = params[:relative_path].last.split('.').last
       @mime_type = case @file_extention
         when 'gif':

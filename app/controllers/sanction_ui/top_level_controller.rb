@@ -76,7 +76,11 @@ roles/destroy => can_
      :can_remove_role => "remove", 
      :can_describe_role => "describe",
      :confirm_remove_role => 'You sure?',
-     :over => 'over'
+     :over => 'over',
+     :principal_type => 'Principal Type: ',
+     :principal_id => "Principal ID: ", 
+     :permissionable_type => 'Permissionable Type: ',
+     :permissionable_id => "Permissionable ID: "
      }
   end
   

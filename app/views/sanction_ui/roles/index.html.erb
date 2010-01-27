@@ -1,18 +1,21 @@
-<div class="suiContainer">
+<div class="suiContainer" id="suiRolesListContainer">
   <%= render :partial => "header", :locals => {:roles => @roles} -%>
-	<ul class="suiRolesList">
+	<ul>
 	<% Sanction::Role::Definition.all_roles.each do |role_definition| -%>
 	  <li>
-		  <span><%= render :partial => "role_definition", :locals => {:role_definition => role_definition} -%>
-		  </span>
+		  <span class="suiRoleName"><%= render :partial => "role_definition", :locals => {:role_definition => role_definition} -%></span>
 	  
+	  
+	  <span class="suiRoleOptionsContainer">
       <% if action_allowed?(:can_add_role, :role_definition => role_definition) -%>
-  	      <span><%= link_to sui_label(:can_add_role), new_sanction_ui_role_path(:role_definition => role_definition.name) -%></span>		
+  	      <span class="suiRoleOptionLink suiRoleAddLink"><%= link_to sui_label(:can_add_role), new_sanction_ui_role_path(:role_definition => role_definition.name) -%></span>		
 	  <% end -%>
 		
 		<% if action_allowed?(:can_describe_role, :role_definition => role_definition) -%>
-	  	      <span><%= link_to sui_label(:can_describe_role), sanction_ui_describe_path(:role_definition => role_definition.name) -%></span>		
+	  	      <span class="suiRoleOptionLink suiRoleDescribeLink"><%= link_to sui_label(:can_describe_role), sanction_ui_describe_path(:role_definition => role_definition.name) -%></span>		
 		  <% end -%>
+		  
+		</span>
 	    <ul>
 	    <%= render :partial => 'role_instance', :collection => role_instances_for_global_role(@roles, role_definition), :as => :role, :locals => {:role_definition => role_definition} %>
 	    </ul>
