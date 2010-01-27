@@ -1,2 +1,7 @@
-<h2>Sorry, you do not have access to do that.</h2>
-TODO: If you have the can_describe_role perm render the human friendly show method...
+<h2>Access Denied</h2>
+<%- if SanctionUi.describe_role_to_known_users_on_access_denied &&
+	  current_user_principal_instance.has_any_role?
+	-%>
+<p>You were denied access because you do not have the required &quot;<%= @role_definition.name.to_s.humanize %>&quot; role.</p>
+  <%= render :file => 'sanction_ui/main/describe' %>
+<%- end -%>

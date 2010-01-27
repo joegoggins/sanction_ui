@@ -18,7 +18,7 @@
   <%- end -%>
   
   <%- unless @role_definition.global? -%>
-	  <% ['permissionable_type','permissionable_id'].each do |p| -%>
+	  <% ['permissionable_type','permissionable_id', 'permissionable_all'].each do |p| -%>
 	  <p>
 	    <%=
 		  begin

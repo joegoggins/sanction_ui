@@ -82,21 +82,30 @@ class SanctionUi::RolesController < SanctionUi::AuthController
           redirect_to(sanction_ui_roles_path) and return
         end
       end
-
-      begin
-        @permissionable_instance = @permissionable_class.find(params[:sanction_role][:permissionable_id])
-      rescue ActiveRecord::RecordNotFound
-        flash[:notice] = "Error: Could not find a #{params[:sanction_role][:permissionable_type]} permissionable instance with id=#{params[:sanction_role][:permissionable_id]}"
-        redirect_to sanction_ui_roles_path and return
-      end
       
-      if @principal_instance.grant(@role_definition.name, @permissionable_instance)
-        flash[:notice] = "&quot;#{@role_definition.name.to_s.humanize}&quot; role successfully added over #{@permissionable_instance.send(SanctionUi.permissionables_to_s_method)}"
-        redirect_to sanction_ui_roles_path and return
+      if params[:permissionable_all].blank?
+        begin
+          @permissionable_instance = @permissionable_class.find(params[:sanction_role][:permissionable_id])
+        rescue ActiveRecord::RecordNotFound
+          flash[:notice] = "Error: Could not find a #{params[:sanction_role][:permissionable_type]} permissionable instance with id=#{params[:sanction_role][:permissionable_id]}"
+          redirect_to sanction_ui_roles_path and return
+        end
+        if @principal_instance.grant(@role_definition.name, @permissionable_instance)
+          flash[:notice] = "&quot;#{@role_definition.name.to_s.humanize}&quot; role successfully added over #{@permissionable_instance.send(SanctionUi.permissionables_to_s_method)}"
+          redirect_to sanction_ui_roles_path and return
+        else
+          flash[:notice] = 'Role could not be added, may already be assigned to this user, or is an inavlid ID.'
+          render :action => 'new' and return
+        end
       else
-        flash[:notice] = 'Role could not be added, may already be assigned to this user, or is an inavlid ID.'
-        render :action => 'new' and return
-      end
+        if @principal_instance.grant(@role_definition.name, @permissionable_class)
+          flash[:notice] = "&quot;#{@role_definition.name.to_s.humanize}&quot; role successfully added over all #{@permissionable_class.to_s.humanize.pluralize}"
+          redirect_to sanction_ui_roles_path and return
+        else
+          flash[:notice] = 'Role could not be added, may already be assigned to this user.'
+          render :action => 'new' and return
+        end
+      end      
     end
   end
 

@@ -1,5 +1,47 @@
-<h1><%= @role_definition.name.to_s.humanize %></h1>
+<%# debug @role_definition -%>
+<h1>Describe &quot;<%= @role_definition.name.to_s.humanize %>&quot;</h1>
+<%- unless @role_definition.about.blank? -%>
+<h2>Purpose</h2>
+<p><%= @role_definition.about %></p>
+<%- end -%>
+<hr />
+<h2>Technical Details</h2>
+<!-->
+<p><%= @role_definition.describe %></p>
+-->
+<h3>Scope: <%= @role_definition.global? ? "Global" : "Granular" %></h3>
+<%- unless @role_definition.includes.empty? -%>
+  <h3>Inherits all privileges of</h3>
+  <ul>
+  <%- @role_definition.includes.each do |role_name| -%>
+    <li><%= link_to role_name.to_s.humanize, sanction_ui_describe_path(role_name) %></li>
+  <%- end -%>
+  </ul>
+<%- end -%>
 
-<p><%= @role_definition.about.nil? ? @role_definition.describe : @role_definition.about %></p>
+<%- unless @role_definition.permissions.empty? -%>
+  <h3>Specific actions</h3>
+  <ul>
+  <%- @role_definition.permissions.each do |perm| -%>
+    <li><%= perm.to_s.humanize %></li>
+  <%- end -%>
+  </ul>
+<%- end -%>
 
-<%= debug @role_definition %>
+<%- unless @role_definition.principals.empty? -%>
+  <h3>User types that can be granted this role</h3>
+  <ul>
+  <%- @role_definition.principals.each do |principal_class| -%>
+    <li><%= principal_class.to_s.humanize.pluralize %></li>
+  <%- end -%>
+  </ul>
+<%- end -%>
+
+<%- unless @role_definition.permissionables.empty? -%>
+  <h3>Data types that this role can be scoped to</h3>
+  <ul>
+  <%- @role_definition.permissionables.each do |permissionable_class| -%>
+    <li><%= permissionable_class.to_s.humanize.pluralize %></li>
+  <%- end -%>
+  </ul>
+<%- end -%>

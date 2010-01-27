@@ -1,1 +1,1 @@
-//this is where the sanction_ui javascript goes
+//this is where the sanction_ui javascript goes, you probably want to override it
