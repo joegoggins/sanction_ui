@@ -1,2 +1,5 @@
-Here's where we describe:
+<h1><%= @role_definition.name.to_s.humanize %></h1>
+
+<p><%= @role_definition.about.nil? ? @role_definition.describe : @role_definition.about %></p>
+
 <%= debug @role_definition %>
