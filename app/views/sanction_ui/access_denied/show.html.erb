@@ -1,7 +1,17 @@
 <h2>Access Denied</h2>
-<%- if SanctionUi.describe_role_to_known_users_on_access_denied &&
-	  current_user_principal_instance.has_any_role?
+<%- if SanctionUi.describe_on_deny
 	-%>
 <p>You were denied access because you do not have the required &quot;<%= @role_definition.name.to_s.humanize %>&quot; role.</p>
-  <%= render :file => 'sanction_ui/main/describe' %>
+	<%- unless @role_definition.purpose.blank? -%>
+	  <p>The purpose of this role is <%= @role_definition.purpose %></p>
+	<%- end -%>
+	<%- unless SanctionUi.denied_contact_label.blank? &&
+	           SanctionUi.denied_contact_email.blank?
+	-%>
+    <p>If you feel you have been wrongly denied access please contact 
+      <%= mail_to SanctionUi.denied_contact_label, SanctionUi.denied_contact_email %>.
+	  </p>
+	<%- end -%>
+<%- else -%>
+<p>You do not have permission to do that.</p>
 <%- end -%>

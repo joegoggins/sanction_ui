@@ -10,30 +10,30 @@ class SanctionUi::TopLevelController < ApplicationController
   
   # Central point through which all sanction_ui auth checks in controllers and views
   # go through 
-  def action_allowed?(access_check_method_name, options={})
-    unless respond_to? SanctionUi.current_user_method
-      raise "Error: Your application controller does not implement :#{SanctionUi.current_user_method}, it must."
+  def action_allowed?(sanction_permission, options={})
+    if !options[:role].blank?
+      action_allowed_for_role?(sanction_permission, options[:role])    
+    elsif !options[:role_definition].blank?
+      action_allowed_for_role?(sanction_permission, options[:role_definition])    
+    else
+      perform_access_control_check(sanction_permission)
     end
-    principal_instance = current_user_principal_instance(access_check_method_name, options)
-    unless principal_instance.class.included_modules.include? Sanction::Principal
-      raise "Your #{SanctionUi.current_user_method} method must yield an instance that is a configured principal of sanction
-             go add it in config/initializers/sanction.rb
-       "
-    end
-    return perform_access_control_check_on_user(principal_instance, access_check_method_name, options)
   end
   helper_method :action_allowed?
 
-  # 
-  def current_user_principal_instance(access_check_method_name, options)
-    send(SanctionUi.current_user_method)
+  # OVERRIDE IF YOU NEED SUPER GRANULAR STUFF 
+  def action_allowed_for_role?(sanction_permission, role)
+    perform_access_control_check(sanction_permission)
   end
-  helper_method :current_user_principal_instance
-  
-  # Actual check for particular permission
+
+  def action_allowed_for_role_definition?(sanction_permission, role_definition)
+    perform_access_control_check(sanction_permission)
+  end  
+    
+  # Actual check for particular permission without regard to any permissionable
   #
-  def perform_access_control_check_on_user(principal_instance, access_check_method_name, options={})
-    principal_instance.has?(access_check_method_name)
+  def perform_access_control_check(sanction_permission)
+    current_principal.has?(sanction_permission)
   end
   
   #########################################

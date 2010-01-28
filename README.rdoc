@@ -9,7 +9,7 @@ Requirements
   yields an instance of a Sanction principal class.
   Default => :current_user
   Changeable in environment.rb like:
-    SanctionUi.current_user_method = :your_method_name
+    SanctionUi.current_principal_method = :your_method_name
 
 * Instances of permissionable and principal classes yield a concise string.
   Default (both permissionables and principals) => :name

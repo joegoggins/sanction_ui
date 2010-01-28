@@ -1,8 +1,8 @@
 <%# debug @role_definition -%>
 <h1>Describe &quot;<%= @role_definition.name.to_s.humanize %>&quot;</h1>
-<%- unless @role_definition.about.blank? -%>
+<%- unless @role_definition.purpose.blank? -%>
 <h2>Purpose</h2>
-<p><%= @role_definition.about %></p>
+<p><%= @role_definition.purpose %></p>
 <%- end -%>
 <hr />
 <h2>Technical Details</h2>

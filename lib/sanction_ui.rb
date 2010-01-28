@@ -11,8 +11,8 @@ module SanctionUi
   # The method that will be called to get a Principal object to check
   # if they can revoke, grant, authorize, or unauthorize sanction roles
   # 
-  @@current_user_method = :current_user
-  mattr_accessor :current_user_method
+  @@current_principal_method = :current_principal
+  mattr_accessor :current_principal_method
   
   # Method called to render what the instance is in the UI
   #
@@ -46,9 +46,27 @@ module SanctionUi
   end
   
   # Set to false if you want your access denied page to
-  # say nothing to users that have some other permission
-  # other than the one they were denied for
+  # say nothing to users about why they were denied access
+  # Will use @role_definition.purpose for the string to describe.
   #
-  @@describe_role_to_known_users_on_access_denied = true
-  mattr_accessor :describe_role_to_known_users_on_access_denied
+  @@describe_on_deny = true
+  mattr_accessor :describe_on_deny
+    
+  # Will display on access denied form if both are not blank
+  #
+  @@denied_contact_label = ""
+  mattr_accessor :denied_contact_label
+  @@denied_contact_email = ""
+  mattr_accessor :denied_contact_email
+  
+end
+unless SanctionUi::ApplicationController.instance_methods.include? "current_principal"
+  raise "Sanction Ui Error: 
+  
+    Your ApplicationController does not implement :current_principal, it must.
+    
+    If you already have a different named method that does this, just make an alias for current_principal
+    
+    Also--this object, whatever it is, must be configured in the sanction.rb initializer as a Principal, go add it.  
+  "
 end
