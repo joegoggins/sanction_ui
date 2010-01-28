@@ -1,10 +1,9 @@
 <div class="suiContainer" id="suiRolesListContainer">
-  <%= render :partial => "header", :locals => {:roles => @roles} -%>
+  <%= render :partial => "index_header", :locals => {:roles => @roles} -%>
 	<ul>
 	<% Sanction::Role::Definition.all_roles.each do |role_definition| -%>
 	  <li>
 		  <span class="suiRoleName"><%= render :partial => "role_definition", :locals => {:role_definition => role_definition} -%></span>
-	  
 	  
 	  <span class="suiRoleOptionsContainer">
       <% if action_allowed?(:can_add_role, :role_definition => role_definition) -%>
@@ -21,7 +20,7 @@
 	    </ul>
 	  </li>
 	<% end -%>
-	</ul> <%# end of suiRolesList -%>
-  <%= render :partial => 'footer', :locals => {:roles => @roles} -%>
+	</ul>
+  <%= render :partial => 'index_footer', :locals => {:roles => @roles} -%>
 </div>
 

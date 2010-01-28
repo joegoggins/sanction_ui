@@ -1,4 +1,9 @@
 <%# debug @role_definition -%>
+<%- content_for :page_title do -%>
+  <%= sui_label :sanction_ui_title %> : Describe Role &quot;<%= @role_definition.name.to_s.humanize%>&quot;
+<%- end -%>
+
+<div class="suiContainer" id="suiDescribeRole">
 <h1>Describe &quot;<%= @role_definition.name.to_s.humanize %>&quot;</h1>
 <%- unless @role_definition.purpose.blank? -%>
 <h2>Purpose</h2>
@@ -45,3 +50,4 @@
   <%- end -%>
   </ul>
 <%- end -%>
+</div>

@@ -32,7 +32,10 @@ module SanctionUi
      :principal_id => "Principal ID: ", 
      :permissionable_type => 'Permissionable Type: ',
      :permissionable_id => "Permissionable ID: ",
-     :permissionable_all => "Check to add role over all instances of this type"
+     :permissionable_all => "Check to add role over all instances of this type",
+     :access_denied => 'Access Denied',
+     # What gets shown in the title of pages
+     :sanction_ui_title => 'Permissions Management System'
   }
   mattr_accessor :labels
   

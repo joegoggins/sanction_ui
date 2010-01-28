@@ -1,6 +1,9 @@
 <%# debug @role_definition  -%>
 <%# debug @role  -%>
-<div class="suiContainer">
+<%- content_for :page_title do -%>
+  <%= sui_label :sanction_ui_title %> : Add &quot;<%= @role_definition.name.to_s.humanize %>&quot;
+<%- end -%>
+<div class="suiContainer" id="suiAddRole">
 <%= render :partial => 'new_header' %>
 <% form_for(@role, :url => sanction_ui_roles_path) do |form| %>
   <%= form.error_messages %>

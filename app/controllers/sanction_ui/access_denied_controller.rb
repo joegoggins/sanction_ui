@@ -3,8 +3,7 @@
 class SanctionUi::AccessDeniedController < SanctionUi::TopLevelController
   # Skip all authorization requirements here
   skip_filter filter_chain
-  
-  layout 'access_denied'
+  layout false
   
   def show
     @role_definition = Sanction::Role::Definition.all.find do |x| 

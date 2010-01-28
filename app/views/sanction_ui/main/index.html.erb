@@ -1,7 +1,10 @@
-<h1>Welcome to Sanction UI: A Permissions Management System</h1>
-<p>This page provides a centralized place to manage access control to this application.</p>
+<%- content_for :page_title do -%>
+  <%= sui_label :sanction_ui_title %>
+<%- end -%>
+<div class="suiContainer" id="suiMainIndex">
+<%= render :partial => "index_header" %>
 <h2>Options</h2>
 <ul>
 	<li><%= link_to "List People by Role", sanction_ui_roles_path %>: Who is responsible for what in this app?</li>
-	<li><%= link_to "List People Alphabetically", '#' %>: NOT DONE YET: Who has access of any kind?</li>
 </ul>
+</div>
