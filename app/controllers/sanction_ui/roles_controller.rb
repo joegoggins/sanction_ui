@@ -17,13 +17,13 @@ class SanctionUi::RolesController < SanctionUi::AuthController
     begin
       yield
     rescue ActiveRecord::RecordNotFound
-      flash[:notice] = "That role no longer exists."
+      flash[:notice] = "Record not found"
       redirect_to sanction_ui_roles_path and return
     end
   end  
     
   def index
-    unless action_allowed? :can_view_sui_roles_index
+    unless action_allowed? :can_view_indexes
       redirect_to sanction_ui_access_denied_path and return
     end
     # eager loaded for quick rendering

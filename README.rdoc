@@ -20,19 +20,4 @@ Requirements
 
 Install
 ===========
-Add :having clauses to your existing sanction plugin initializer file, the following :having clauses are used
-in the engine to protect various different actions
-  * can_view_sui_index
-      main/index 
-  * can_view_sui_describe 
-	  main/describe 
-  * can_view_sui_roles_index 
-      roles/index 
-      All permissions in the roles table
-  * can_add_role
-      roles/new
-      Adds a principal to a given role 
-      a wrapper around .grant
-  * can_remove_role
-      roles/destroy (id is the role_id)
-      Remove a particular role
+See the stuff in config/initializers/sanction.rb pertinent to sanction_ui

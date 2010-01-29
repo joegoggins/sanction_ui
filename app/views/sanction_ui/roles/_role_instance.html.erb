@@ -1,7 +1,7 @@
 <li>
 	<span class="suiRoleUser">
 	<% if role.principal_exists? -%>
-	  <%= role.principal.send(SanctionUi.principals_to_s_method) %>
+	  <%= SanctionUi.eval_name(role.principal) %>
 	<% else -%>
 	  Invalid principal for <%= role.principal_type %>.<%= role.principal_id %>
 	<% end -%>
@@ -18,7 +18,7 @@
 	<% if role.permissionable_over_all? -%>
 	   <span class="suiPermissionable">all <%= role.permissionable_type.to_s.pluralize -%></span>
 	<% elsif role.permissionable_exists? -%>
-		<span class="suiPermissionable"><%= role.permissionable.send(SanctionUi.permissionables_to_s_method) -%>
+		<span class="suiPermissionable"><%= SanctionUi.eval_name(role.permissionable) -%>
 			<% if role_definition.principals.length > 1 -%>
 					<span class="suiPermessionableAltName">(<%= role.permissionable_type.underscore.humanize %>)</span>
 			<% end -%>

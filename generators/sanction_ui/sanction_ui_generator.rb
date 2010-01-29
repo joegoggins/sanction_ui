@@ -22,7 +22,9 @@ class SanctionUiGenerator < Rails::Generator::Base
       m.directory 'app/views/sanction_ui/main'
       m.directory 'app/views/sanction_ui/roles'
       m.directory 'app/controllers/sanction_ui'
+      m.file 'config/initializers/sanction_ui.rb', "config/initializers/sanction_ui.rb"
       m.file 'app/controllers/sanction_ui/auth_controller.rb', "app/controllers/sanction_ui/auth_controller.rb"
+      m.puts SanctionUi.install_instructions
     end
   end
 end

@@ -5,6 +5,8 @@
 class SanctionUi::TopLevelController < ApplicationController
   layout 'sanction_ui'
 
+  @@current_principal_checked = false
+
   # PROTECTED METHODS (OVERRIDE IF NEEDED)
   protected
   
@@ -33,7 +35,18 @@ class SanctionUi::TopLevelController < ApplicationController
   # Actual check for particular permission without regard to any permissionable
   #
   def perform_access_control_check(sanction_permission)
-    current_principal.has?(sanction_permission)
+    if current_principal.blank?
+      false # Probably un-authenticated
+    else
+      begin
+        current_principal.has?(sanction_permission)
+      rescue NameError => e
+        raise "Sanction Ui Error: current_principal method must return an object that responds to .has?
+               This could be because you haven't added this returned object to the
+               sanction principals in config/initializers/sanction.rb.
+        "
+      end
+    end
   end
   
   #########################################
