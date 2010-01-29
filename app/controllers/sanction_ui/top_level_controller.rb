@@ -16,18 +16,19 @@ class SanctionUi::TopLevelController < ApplicationController
     if !options[:role].blank?
       action_allowed_for_role?(sanction_permission, options[:role])    
     elsif !options[:role_definition].blank?
-      action_allowed_for_role?(sanction_permission, options[:role_definition])    
+      action_allowed_for_role_definition?(sanction_permission, options[:role_definition])    
     else
       perform_access_control_check(sanction_permission)
     end
   end
   helper_method :action_allowed?
 
-  # OVERRIDE IF YOU NEED SUPER GRANULAR STUFF 
+  # Override in SanctionUi::AuthController if needed
   def action_allowed_for_role?(sanction_permission, role)
     perform_access_control_check(sanction_permission)
   end
-
+  
+  # Override in SanctionUi::AuthController if needed
   def action_allowed_for_role_definition?(sanction_permission, role_definition)
     perform_access_control_check(sanction_permission)
   end  

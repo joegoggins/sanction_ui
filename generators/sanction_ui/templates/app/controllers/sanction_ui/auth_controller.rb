@@ -13,30 +13,43 @@
 class SanctionUi::AuthController < SanctionUi::TopLevelController
   layout 'sanction_ui'
   
-  # OVERRIDE IF YOU NEED SUPER GRANULAR STUFF FOR A PARTICULAR ROLE
-  # For example: always return false for sanction_permission=:can_add_role role.principal == your boss
+  # Override for non-standard protection of an action over a particular Sanction::Role instance/row
+  # Following example prevents anyone from removing the uber-super-user from the permission_manager role
+  # Practically speaking this is only the :can_remove_role action,
+  # all others, we be checked via action_allowed_for_role_definition? instead
   #
-  #def action_allowed_for_role?(sanction_permission, role)
-  #  (current_principal.has? sanction_permission) && 
-  #  (current_principal.SOME_OTHER_SPECIAL_CHECK)
-  #end
+  # def action_allowed_for_role?(sanction_permission, role)
+  #   if role.principal_type == 'Ps::Person' &&
+  #      role.principal_id == '2197841' && 
+  #      role.name == 'permission_manager'
+  #     return false # you can't remove Joe from this role
+  #   end
+  #   super
+  # end
 
-  # OVERRIDE IF YOU WANT TO DELEGATE MANAGEMENT OF SANCTION ROLE DEFINITIONS TO SPECIFIC PEOPLE
-  # 
-  #def action_allowed_for_role_definition?(sanction_permission, role_definition)
-  #  perform_access_control_check(sanction_permission)
-  #end
-  
-  
-  # If you want to do some special stuff to override or load some additional data
-  # to be rendered in overridden Sanction UI partials, you can do this via before_filters like follows:
-  # Note: use one of various flavors of the action_allowed* methods to do access control, not
-  # before filters
+  # Override actions governing the role definition 
+  # where a particular instance of Sanction::Role does not exist aka :can_add_role, :can_describe_role
+  # The following example ensures only a current_principal of Joe can add permission_manager's
   #
-  #  before_filter :only => ... do |controller|
-  #    if controller.class == SanctionUi::RolesController &&
-  #        controller.action_name == 'new'
-  #      @your_special_fresh_data = Special.find bla bla bla
-  #    end
-  #  end
+  # def action_allowed_for_role_definition?(sanction_permission, role_definition)
+  #   if current_principal.id == '2197841'
+  #     return true
+  #   elsif sanction_permission == :can_add_role && role_definition.name == :permission_manager
+  #     return false
+  #   end
+  #   super
+  # end
+  
+  # Use before_filters to load special data for your overriden partials if you need to.
+  # Note that you can't just do: @my_special_data = 'bla', you have to operate on the
+  # controller instance of the child (which is not SanctionUi::AuthController)
+  #
+  # before_filter do |controller|
+  #   if controller.class == SanctionUi::RolesController &&
+  #     controller.action_name == 'index'
+  #     controller.instance_eval do
+  #       @my_special_data = 'some stuff i render in an overriden partial utilized by roles/index.'
+  #     end
+  #   end
+  # end
 end
