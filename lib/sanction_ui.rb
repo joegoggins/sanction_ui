@@ -136,7 +136,8 @@ module SanctionUi
     end
     
   end
-    
+  
+  # Used in the UI to display the name of a principal or permissionable instance
   def self.eval_name(principal_or_permissionable_instance)
     if self.is_valid_principal? principal_or_permissionable_instance
       the_method = self.principal_to_s_methods[principal_or_permissionable_instance.class.to_s]
@@ -152,8 +153,8 @@ module SanctionUi
     eval_string = "principal_or_permissionable_instance.#{the_method}"
     begin
       return eval(eval_string)
-    rescue
-      return "Sanction Ui Error: Invalid method: #{eval_string}"
+    rescue Exception => e
+      return "Sanction Ui Error: Invalid method: #{eval_string}, exception = #{e.inspect}"
     end
   end
 end

@@ -1,3 +1,2 @@
-
-<%= form.label :principal_id, sui_label(:principal_id) %>
+<%= form.label :principal_id, sui_label(:principal_id) + (@role_definition.principals.length == 1 ? @role_definition.principals.first.constantize.primary_key : "") %>
 <%= form.text_field :principal_id %>
