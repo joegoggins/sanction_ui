@@ -1,23 +1,21 @@
 Sanction UI
 ===========
-Sanction UI is a Graphical Interface Rails Engine to sit ontop of your Sanction settings, allowing easy control and management of your users and permissions.  
+Sanction UI is a Graphical Interface Rails Engine to sit on top of your Sanction settings, allowing easy control and management of your users and permissions.  
 
 
 Requirements
 ===========
-* You have a globally accessable method in controllers and views that
-  yields an instance of a Sanction principal class.
-  Default => :current_user
-  Changeable in environment.rb like:
-    SanctionUi.current_principal_method = :your_method_name
+* You have a globally accessible method, :current_principal, in controllers and views that
+  yields an instance of a Sanction principal class.  This is typically your currently
+  logged in user loaded via authentication.
 
-* Instances of permissionable and principal classes yield a concise string.
-  Default (both permissionables and principals) => :name
-  Changable via:
-
-    SanctionUi.principals_to_s_method = :your_method_name
-    SanctionUi.permissionables_to_s_method = :your_method_name
+* All principal and permissionable classes need to specify a method that
+  SanctionUi can use to render their "name", see config/initializers/sanction_ui.rb for
+  examples.
 
 Install
 ===========
-See the stuff in config/initializers/sanction.rb pertinent to sanction_ui
+* Get http://github.com/joegoggins/sanction and  http://github.com/joegoggins/sanction_ui
+* script/generate sanction
+* script/generate sanction_ui
+* Follow the simple instructions given by the sanction_ui generator.
