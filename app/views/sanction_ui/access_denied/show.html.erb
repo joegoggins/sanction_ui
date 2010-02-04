@@ -12,7 +12,7 @@
 	<div class="suiContainer" id="suiAccessDenied">
 	<h2><%= sui_label :access_denied %></h2>
 	<%- if SanctionUi.describe_on_deny -%>
-	  <%- if current_principal.blank? -%>
+	  <%- if current_principal.nil? -%>
 	    <p>Sorry, you were denied access because we're not sure who you are.  If you feel you should have access, please try logging in again.</p>
 	  <%- else -%>
 			<p>Sorry <%= SanctionUi.eval_name(current_principal) %>, you were denied access because 
