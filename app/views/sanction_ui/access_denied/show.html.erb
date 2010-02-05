@@ -12,25 +12,36 @@
 	<div class="suiContainer" id="suiAccessDenied">
 	<h2><%= sui_label :access_denied %></h2>
 	<%- if SanctionUi.describe_on_deny -%>
-	  <%- if current_principal.nil? -%>
-	    <p>Sorry, you were denied access because we're not sure who you are.  If you feel you should have access, please try logging in again.</p>
+	  <%- if current_principal.new_record? -%>
+	    <p>You were denied access because we're not sure who you are.  If you feel you should have access, please try logging in again.</p>
 	  <%- else -%>
 			<p>Sorry <%= SanctionUi.eval_name(current_principal) %>, you were denied access because 
 			  <%- if @role_definitions.length == 0 -%>
 			    there are no roles in the system that match &quot;<%= params[:role_def_or_perm_name] %>&quot;.
 			  <%- elsif @role_definitions.length == 1 -%>
-				  you do not have the &quot;<%= @role_definitions.first.name.to_s.humanize %>&quot; role/permission.  The purpose of this role is <%= @role_definitions.first.purpose %>.
+				  you do not have the &quot;<%= @role_definitions.first.name.to_s.humanize %>&quot; role/permission 
+				  <%- unless @role_definitions.first.purpose.blank? -%>
+				    The purpose of this role is <%= @role_definitions.first.purpose %>.
+				  <%- end -%>
 				<%- else -%>
-				  you do not have any of the following roles/permissions:
+				  you do not have any of the following roles/permissions
 				  <ul>
 					<%- @role_definitions.each do |role_definition| -%>
 					  <li>
-						  &quot;<%= role_definition.name.to_s.humanize %>&quot;:<%= @role_definition.purpose %></li>
+						  &quot;<%= role_definition.name.to_s.humanize %>&quot;<%= role_definition.purpose.blank? ? "" : ": #{role_definition.purpose}" %></li>
 					<%- end -%>
 					</ul>
 				<%- end -%>
+				<%- unless @over_type.blank? -%>
+				  over &quot;<%= @over_type.to_s.humanize.pluralize %>&quot; data
+				  <%- unless @over_id.blank? -%>
+				    ,where the id is <%= @over_id %>
+		  		<%- end -%>
+		      .</p>
+				<%- end -%>
+				
 			<%- end -%>
-		</p>
+			
 		<%- unless SanctionUi.denied_contact_label.blank? &&
 		           SanctionUi.denied_contact_email.blank?
 		-%>
