@@ -1,13 +1,29 @@
 Sanction UI
 ===========
-Sanction UI is a Graphical Interface Rails Engine to sit on top of your Sanction settings, allowing easy control and management of your users and permissions.  
+Sanction UI is a Graphical Interface Rails Engine to sit on top of your Sanction settings, allowing
+* easy control and management of your users and permissions.
+* a simple one line methodology of redirecting to access denied from any controller in your app
+* the ability to implement specialized delegation of permission management, i.e. 
+  * super_users can create any other user, no-one else can.
+  * my boss/client cannot be deleted.
+* User friendly access denied page for known [authenticated] users
+* Human friendly description's of the access control system
 
 
-Requirements
-===========
+Dependencies
+============
+* http://github.com/joegoggins/sanction
+
+App Requirements
+================
 * You have a globally accessible method, :current_principal, in controllers and views that
   yields an instance of a Sanction principal class.  This is typically your currently
-  logged in user loaded via authentication.
+  logged in user loaded via authentication.  It must NOT return nil ever, in that case
+  return a blank Principal class. In ApplicationController, you'll want to have something like:
+		def current_principal
+	    @current_principal ||= AppUser.find_by_internet_id(current_umn_session.internet_id) || AppUser.new
+	  end
+	  helper_method :current_principal
 
 * All principal and permissionable classes need to specify a method that
   SanctionUi can use to render their "name", see config/initializers/sanction_ui.rb for
@@ -15,7 +31,7 @@ Requirements
 
 Install
 ===========
-* Get http://github.com/joegoggins/sanction and  http://github.com/joegoggins/sanction_ui
+* Get http://github.com/joegoggins/sanction and http://github.com/joegoggins/sanction_ui
 * script/generate sanction
 * script/generate sanction_ui
 * Follow the simple instructions given by the sanction_ui generator.

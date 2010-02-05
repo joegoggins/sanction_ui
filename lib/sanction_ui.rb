@@ -77,13 +77,34 @@ module SanctionUi
       @the_permission_manager = User.find(:first)
       @the_permission_manager.grant(:permission_manager)
       
-    3. Restart Rails server and hit /permissions in a browser
+    3. Implement a method in ApplicationController, something like:
+       def current_principal
+   	    @current_principal ||= User.find_by_internet_id('the_user')
+   	   end
+   	   helper_method :current_principal
+
+    4. Restart Rails server and hit /permissions in a browser
     
-    4. Furhter customization can happen in your app in:
-         config/initializers/sanction_ui.rb
+    5. Further customization can happen in your app in:
+         # Access denied helper, add this to ApplicationController
+            include SanctionUi::ApplicationController::Helpers
+         # will allow access control like this your controllers:
+           return false if redirect_to_access_denied_if_cannot(:can_show, @thing)
+           
+         # Basic permissions system config see sanction documentation
          config/initializers/sanction.rb
+         
+         # How sanction permissions manifest in the UI
+         config/initializers/sanction_ui.rb
+         
+         # Custom access control rules for the permissions management UI, stuff like:
+         #   * super_users can create any other user, no-one else can.
+         #   * my boss/client cannot be deleted.
          app/controllers/sanction_ui/auth_controller.rb
-         copying & customizing files from plugin to app/views/sanction_ui
+         
+         # Override appearance of anything in UI
+         #   * HTML partials from app/views/sanction_ui/main or app/views/sanction_ui/roles
+         #   * CSS and JS overrides in to app/views/sanction_ui/assets (note, they don't live in /public and can interpolate like ERB if you want)
     EOS
   end
   
@@ -158,8 +179,7 @@ module SanctionUi
     end
   end
 end
-
-unless SanctionUi::ApplicationController.instance_methods.include? "current_principal"
+unless ApplicationController.instance_methods.include? "current_principal"
   raise "Sanction Ui Error: 
   
     Your ApplicationController does not implement :current_principal, it must.
