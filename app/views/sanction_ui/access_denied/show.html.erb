@@ -17,7 +17,7 @@
 	  <%- else -%>
 			<p>Sorry <%= SanctionUi.eval_name(current_principal) %>, you were denied access because 
 			  <%- if @role_definitions.length == 0 -%>
-			    there are no roles in the system that match &quot;<%= params[:role_def_or_perm_name] %>&quot;.
+			    there are no roles in the system that match &quot;<%= params[:role_def_or_perm_name] %>&quot;
 			  <%- elsif @role_definitions.length == 1 -%>
 				  you do not have the &quot;<%= @role_definitions.first.name.to_s.humanize %>&quot; role/permission 
 				  <%- unless @role_definitions.first.purpose.blank? -%>
@@ -29,24 +29,25 @@
 					<%- @role_definitions.each do |role_definition| -%>
 					  <li>
 						  &quot;<%= role_definition.name.to_s.humanize %>&quot;<%= role_definition.purpose.blank? ? "" : ": #{role_definition.purpose}" %></li>
-					<%- end -%>
+					<%- end -%><%# end @role_definitions.each-%>
 					</ul>
-				<%- end -%>
-				<%- unless @over_type.blank? -%>
-				  over &quot;<%= @over_type.to_s.humanize.pluralize %>&quot; data
-				  <%- unless @over_id.blank? -%>
-				    ,where the id is <%= @over_id %>
-		  		<%- end -%>
-		      .</p>
-				<%- end -%>
-				
-			<%- end -%>
+				<%- end -%><%# end if/else on @role_definitions.length -%>
+				<%- if SanctionUi.describe_over_on_deny -%>
+					<%- unless @over_type.blank? -%>
+					  over &quot;<%= @over_type.to_s.humanize.pluralize %>&quot; data
+					  <%- unless @over_id.blank? -%>
+					    , where the id is <%= @over_id %>
+			  		<%- end -%><%# end unless @over_id -%>     
+					<%- end -%><%# end unless @over_type -%>
+       <%- end -%><%# end if SanctionUi.describe_over_on_deny -%>				
+       .</p>
+			<%- end -%><%# end if current_principal.new_record? -%>
 			
 		<%- unless SanctionUi.denied_contact_label.blank? &&
 		           SanctionUi.denied_contact_email.blank?
 		-%>
 		  <%= render :partial => 'if_denied_contact' %>
-		<%- end -%>
+		<%- end -%><%# end if SanctionUi.describe_on_deny -%>
 	<%- else -%>
 	  <%= render :partial => "denied_without_because" %>
 	<%- end -%>

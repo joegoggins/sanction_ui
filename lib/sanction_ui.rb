@@ -5,6 +5,10 @@ module SanctionUi
   # Will use @role_definition.purpose for the string to describe.
   #
   :describe_on_deny,
+  
+  # Will provide additional information about what the role was scoped to
+  # when access is denied
+  :describe_over_on_deny,
   # Will display on access denied form if both are not blank and describe_on_deny is true
   #
   :denied_contact_label,
@@ -40,6 +44,7 @@ module SanctionUi
        :sanction_ui_title => 'Permissions Management System'
     }
     @@describe_on_deny = true
+    @@describe_over_on_deny = true
     @@denied_contact_label = ""
     @@denied_contact_email = ""
     @@principal_to_s_methods = {} 

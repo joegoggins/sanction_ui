@@ -7,22 +7,21 @@ class SanctionUi::AccessDeniedController < SanctionUi::TopLevelController
   
   def show
     @role_definitions = Sanction::Role::Definition.all.find_all do |x| 
-      x.name == params[:role_def_or_perm_name].to_sym ||
-      x.permissions.include?(params[:role_def_or_perm_name].to_sym)
+      x.name == flash[:sui_denied_role_def_or_perm_name] ||
+      x.permissions.include?(flash[:sui_denied_role_def_or_perm_name])
     end
     
-    unless params[:over_type].blank?
-      begin
-        @over_type = params[:over_type].constantize
-      rescue NameError => e
-        render :text => "Invalid over type" and return
+    unless flash[:sui_denied_over_type].blank?
+      if flash[:sui_denied_over_type].class == Class
+        @over_type = flash[:sui_denied_over_type]
+      else
+        render :text => "Invalid over type #{flash[:sui_denied_over_type]}" and return
       end
     end
     
     # Route is set up like :over_type/*over_id", hence the arrayness below
-    unless params[:over_id].blank?
-      @over_id = params[:over_id].first
+    unless flash[:sui_denied_over_id].blank?
+      @over_id = flash[:sui_denied_over_id]
     end
-    
   end
 end
