@@ -1,11 +1,8 @@
 # This is the top of the inheritance hierarchy for sanction ui
 # It only contains helper methods you might want to override in
 # you app
-# NOTE:
 class SanctionUi::TopLevelController < ApplicationController
   layout 'sanction_ui'
-
-  @@current_principal_checked = false
 
   # PROTECTED METHODS (OVERRIDE IF NEEDED)
   protected
