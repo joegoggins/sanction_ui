@@ -4,7 +4,7 @@ ActionController::Routing::Routes.draw do |map|
     sanction_ui.describe "describe/:role_definition", :controller => 'main', :action => 'describe'
     sanction_ui.asset "asset/*relative_path", :controller => 'asset', :action => 'show'
     # Expects flash[:sui_denied_role_def_or_perm_name] to be set
-    # sui_denied_over_type and sui_denied_over_id can also be set
+    # flash[:sui_denied_over_type] and flash[:sui_denied_over_instance] can also be set
     sanction_ui.access_denied "denied", :controller => 'access_denied', :action => 'show'
     sanction_ui.resources :roles,
       :only => [:index, :new, :create, :destroy]

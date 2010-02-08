@@ -25,8 +25,8 @@ module SanctionUi
                   flash[:sui_denied_over_type] = permissionable_class_or_instance
                   redirect_to(sanction_ui_access_denied_path) and return true
                 else
-                  flash[:sui_denied_over_type] = permissionable_class_or_instance.class.to_s
-                  flash[:sui_denied_over_id] = permissionable_class_or_instance
+                  flash[:sui_denied_over_type] = permissionable_class_or_instance.class
+                  flash[:sui_denied_over_instance] = permissionable_class_or_instance
                   redirect_to(sanction_ui_access_denied_path) and return true
                 end
               end

@@ -35,9 +35,9 @@
 				<%- if SanctionUi.describe_over_on_deny -%>
 					<%- unless @over_type.blank? -%>
 					  over &quot;<%= @over_type.to_s.humanize.pluralize %>&quot; data
-					  <%- unless @over_id.blank? -%>
-					    , where the id is <%= @over_id %>
-			  		<%- end -%><%# end unless @over_id -%>     
+					  <%- unless @over_instance.blank? -%>
+					    , where the id is <%= @over_instance.id %>
+			  		<%- end -%><%# end unless @over_instance -%>     
 					<%- end -%><%# end unless @over_type -%>
        <%- end -%><%# end if SanctionUi.describe_over_on_deny -%>				
        .</p>

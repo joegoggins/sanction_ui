@@ -20,8 +20,8 @@ class SanctionUi::AccessDeniedController < SanctionUi::TopLevelController
     end
     
     # Route is set up like :over_type/*over_id", hence the arrayness below
-    unless flash[:sui_denied_over_id].blank?
-      @over_id = flash[:sui_denied_over_id]
+    unless flash[:sui_denied_over_instance].blank?
+      @over_instance = flash[:sui_denied_over_instance]
     end
   end
 end
