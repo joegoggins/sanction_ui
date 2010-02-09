@@ -2,6 +2,7 @@
 # It only contains helper methods you might want to override in
 # you app
 class SanctionUi::TopLevelController < ApplicationController
+  include SanctionUi::ApplicationController::Helpers
   layout 'sanction_ui'
 
   # PROTECTED METHODS (OVERRIDE IF NEEDED)

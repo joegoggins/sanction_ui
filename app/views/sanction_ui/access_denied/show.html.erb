@@ -11,7 +11,7 @@
 <body>
 	<div class="suiContainer" id="suiAccessDenied">
 	<h2><%= sui_label :access_denied %></h2>
-	<%- if SanctionUi.describe_on_deny -%>
+	<%- if SanctionUi.describe_on_deny && @sui_flash_set -%>
 	  <%- if current_principal.new_record? -%>
 	    <p>You were denied access because we're not sure who you are.  If you feel you should have access, please try logging in again.</p>
 	  <%- else -%>
@@ -21,7 +21,7 @@
 			  <%- elsif @role_definitions.length == 1 -%>
 				  you do not have the &quot;<%= @role_definitions.first.name.to_s.humanize %>&quot; role/permission 
 				  <%- unless @role_definitions.first.purpose.blank? -%>
-				    The purpose of this role is <%= @role_definitions.first.purpose %>.
+				    The purpose of this role is <%= @role_definitions.first.purpose %>
 				  <%- end -%>
 				<%- else -%>
 				  you do not have any of the following roles/permissions

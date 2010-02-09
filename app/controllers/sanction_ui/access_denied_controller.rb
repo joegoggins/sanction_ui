@@ -6,6 +6,9 @@ class SanctionUi::AccessDeniedController < SanctionUi::TopLevelController
   layout false
   
   def show
+    # If this flash is not set, the show page doesn't describe the reason for denial
+    # This happens when crawlers stumble on this or if the user refreshes
+    @sui_flash_set = flash[:sui_denied_role_def_or_perm_name].blank? ? false : true
     @role_definitions = Sanction::Role::Definition.all.find_all do |x| 
       x.name == flash[:sui_denied_role_def_or_perm_name] ||
       x.permissions.include?(flash[:sui_denied_role_def_or_perm_name])

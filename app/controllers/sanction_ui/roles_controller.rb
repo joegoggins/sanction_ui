@@ -23,8 +23,10 @@ class SanctionUi::RolesController < SanctionUi::AuthController
   end  
     
   def index
+    
     unless action_allowed? :can_view_permissions
-      redirect_to sanction_ui_access_denied_path(:can_view_permissions) and return
+      set_access_denied_flash(:can_view_permissions)
+      redirect_to sanction_ui_access_denied_path and return false
     end
     # eager loaded for quick rendering
     @roles = Sanction::Role.find(:all, :include => [:principal, :permissionable], :order => 'name')
@@ -32,7 +34,8 @@ class SanctionUi::RolesController < SanctionUi::AuthController
 
   def new
     unless action_allowed? :can_add_role
-      redirect_to sanction_ui_access_denied_path(:can_add_role) and return
+      set_access_denied_flash(:can_add_role)
+      redirect_to sanction_ui_access_denied_path and return false
     end
     
     @role = Sanction::Role.new :name => @role_definition.name
@@ -46,7 +49,8 @@ class SanctionUi::RolesController < SanctionUi::AuthController
 
   def create
     unless action_allowed? :can_add_role
-      redirect_to sanction_ui_access_denied_path(:can_add_role) and return
+      set_access_denied_flash(:can_add_role)
+      redirect_to sanction_ui_access_denied_path and return false
     end
     @role = Sanction::Role.new params[:sanction_role]
     begin
@@ -116,7 +120,8 @@ class SanctionUi::RolesController < SanctionUi::AuthController
   def destroy
     @role = Sanction::Role.find(params[:id])
     unless action_allowed? :can_remove_role
-      redirect_to sanction_ui_access_denied_path(:can_remove_role) and return
+      set_access_denied_flash(:can_remove_role)
+      redirect_to sanction_ui_access_denied_path and return false
     end
 
     if @role.destroy

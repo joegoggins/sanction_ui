@@ -3,7 +3,8 @@ class SanctionUi::MainController < SanctionUi::AuthController
   #
   def index
     unless action_allowed? :can_view_permissions
-      redirect_to sanction_ui_access_denied_path(:can_view_permissions) and return
+      set_access_denied_flash(:can_view_permissions)
+      redirect_to sanction_ui_access_denied_path and return false
     end
   end
 
@@ -12,7 +13,8 @@ class SanctionUi::MainController < SanctionUi::AuthController
   #
   def describe
     unless action_allowed? :can_describe_role
-      redirect_to sanction_ui_access_denied_path(:can_describe_role) and return
+      set_access_denied_flash(:can_describe_role)
+      redirect_to sanction_ui_access_denied_path and return false
     end
     @role_definition = Sanction::Role::Definition.all_roles.find do |x|
       x.name == params[:role_definition].to_sym
