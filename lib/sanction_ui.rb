@@ -79,7 +79,7 @@ module SanctionUi
                      :having => [:#{self.special_permissions.keys.join(',:')}], 
                      :purpose => "to manage who can access what in the application"
                      
-    2. Add a user to this role in the console
+    2. Add a user to this role in the console (or create a migration and add this)
       @the_permission_manager = User.find(:first)
       @the_permission_manager.grant(:permission_manager)
       
