@@ -58,11 +58,15 @@ class SanctionUi::RolesController < SanctionUi::AuthController
       end
     end
     
-    begin
-      @principal_instance = @principal_class.find(params[:sanction_role][:principal_id])
-    rescue ActiveRecord::RecordNotFound
-      flash[:notice] = "Error: Could not find a #{params[:sanction_role][:principal_type]} principal instance with id=#{params[:sanction_role][:principal_id]}"
-      redirect_to sanction_ui_roles_path and return
+    if params[:principal_all].blank?
+      begin
+        @principal_instance = @principal_class.find(params[:sanction_role][:principal_id])
+      rescue ActiveRecord::RecordNotFound
+        flash[:notice] = "Error: Could not find a #{params[:sanction_role][:principal_type]} principal instance with id=#{params[:sanction_role][:principal_id]}"
+        redirect_to sanction_ui_roles_path and return
+      end      
+    else
+      @principal_instance = @principal_class
     end
     
     if @role_definition.global?

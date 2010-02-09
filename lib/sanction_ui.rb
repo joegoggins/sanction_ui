@@ -36,6 +36,7 @@ module SanctionUi
        :over => 'over',
        :principal_type => 'Principal Type: ',
        :principal_id => "Principal ID: ", 
+       :principal_all => "Check to add role over all instances of this type",
        :permissionable_type => 'Permissionable Type: ',
        :permissionable_id => "Permissionable ID: ",
        :permissionable_all => "Check to add role over all instances of this type",

@@ -8,7 +8,7 @@
 <% form_for(@role, :url => sanction_ui_roles_path) do |form| %>
   <%= form.error_messages %>
   <%= hidden_field_tag 'role_definition', @role_definition.name %>
-  <%- ['principal_type','principal_id'].each do |p| -%>
+  <%- ['principal_type','principal_id','principal_all'].each do |p| -%>
   <p>
     <%=
     begin
@@ -19,7 +19,7 @@
     %>
 	</p>
   <%- end -%>
-  
+  <hr />
   <%- unless @role_definition.global? -%>
 	  <% ['permissionable_type','permissionable_id', 'permissionable_all'].each do |p| -%>
 	  <p>
