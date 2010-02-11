@@ -20,7 +20,7 @@ App Requirements
   yields an instance of a Sanction principal class.  This is typically your currently
   logged in user loaded via authentication.  It must NOT return nil ever, in that case
   return a blank Principal class. In ApplicationController, you'll want to have something like:
-		def current_principal
+	  def current_principal
 	    @current_principal ||= AppUser.find_by_internet_id(current_umn_session.internet_id) || AppUser.new
 	  end
 	  helper_method :current_principal

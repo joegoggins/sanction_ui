@@ -85,7 +85,7 @@ module SanctionUi
       
     3. Implement a method in ApplicationController, something like:
        def current_principal
-   	    @current_principal ||= User.find_by_internet_id('the_user')
+   	    @current_principal ||= User.find(:first) 
    	   end
    	   helper_method :current_principal
 
