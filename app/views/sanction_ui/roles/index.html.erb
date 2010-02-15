@@ -17,6 +17,16 @@
 		</span>
 	    <ul>
 	    <%= render :partial => 'role_instance', :collection => role_instances_for_global_role(@roles, role_definition), :as => :role, :locals => {:role_definition => role_definition} %>
+	
+	    <%- unless @bypass_principals_for_role_definition[role_definition.name].blank? -%>
+	      <%- @bypass_principals_for_role_definition[role_definition.name].each do |result_container| -%>
+	        <li><%= result_container[:label] %>
+			      <ul>
+							<%= render :partial => 'bypass_principal', :collection => result_container[:results], :as => :principal, :locals => {:role_definition => role_definition} %>
+				    </ul>
+			    </li>
+	      <%- end -%>
+	    <%- end -%>
 	    </ul>
 	  </li>
 	<% end -%>

@@ -30,6 +30,37 @@ class SanctionUi::RolesController < SanctionUi::AuthController
     end
     # eager loaded for quick rendering
     @roles = Sanction::Role.find(:all, :include => [:principal, :permissionable], :order => 'name')
+    
+    # This below is a lil crazy--used to show when the permissions of the application
+    # are being bypassed by other lists
+    # essentially, we're walking over each role def and seeing if there are named_scope bypasses
+    # on any given principal 
+    @bypass_principals_for_role_definition = {}
+    unless SanctionUi.bypass_named_scopes.empty?
+      Sanction::Role::Definition.all_roles.each do |role_def|
+        if (not SanctionUi.bypass_named_scopes[role_def.name].blank?) && SanctionUi.bypass_named_scopes[role_def.name].kind_of?(Array)
+          SanctionUi.bypass_named_scopes[role_def.name].each do |bypass_hash|
+            if bypass_hash[:named_scope].kind_of? Symbol
+              role_def.principals.each do |principal|
+                principal_klass = principal.constantize
+                if principal_klass.respond_to? bypass_hash[:named_scope]                  
+                  results = principal_klass.send(bypass_hash[:named_scope], {:role_definition => role_def})
+                  result_container = bypass_hash.dup
+                  result_container[:results] = results
+                  if @bypass_principals_for_role_definition[role_def.name].kind_of? Array
+                    @bypass_principals_for_role_definition[role_def.name] << result_container
+                  else
+                    @bypass_principals_for_role_definition[role_def.name] = [result_container]
+                  end
+                end
+              end
+            else
+              raise "only know how to do stuff with symbol refs for :named_scope, you had #{bypass_hash[:named_scope]}"
+            end
+          end          
+        end
+      end
+    end
   end
 
   def new

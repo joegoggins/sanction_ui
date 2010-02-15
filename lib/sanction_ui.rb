@@ -12,7 +12,11 @@ module SanctionUi
   # Will display on access denied form if both are not blank and describe_on_deny is true
   #
   :denied_contact_label,
-  :denied_contact_email
+  :denied_contact_email,
+  
+  :bypass_named_scopes,
+  
+  :bypass_render_limits
 
   mattr_reader :principal_to_s_methods, :permissionable_to_s_methods, :has_been_configured, :install_instructions, :special_permissions
   
@@ -50,6 +54,8 @@ module SanctionUi
     @@denied_contact_email = ""
     @@principal_to_s_methods = {} 
     @@permissionable_to_s_methods = {}
+    @@bypass_named_scopes = {}
+    @@bypass_render_limits = [10,1000]
     @@special_permissions = {
       :can_view_permissions => "Show the root page of sanction_ui AND
       The main roles/index page where permissions management happens.
