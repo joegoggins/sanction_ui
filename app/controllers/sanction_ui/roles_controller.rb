@@ -44,7 +44,7 @@ class SanctionUi::RolesController < SanctionUi::AuthController
               role_def.principals.each do |principal|
                 principal_klass = principal.constantize
                 if principal_klass.respond_to? bypass_hash[:named_scope]                  
-                  results = principal_klass.send(bypass_hash[:named_scope], {:role_definition => role_def})
+                  results = principal_klass.send(bypass_hash[:named_scope], {:role_definition => role_def, :bypass_hash => bypass_hash})
                   result_container = bypass_hash.dup
                   result_container[:results] = results
                   if @bypass_principals_for_role_definition[role_def.name].kind_of? Array
