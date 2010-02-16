@@ -35,17 +35,37 @@ class SanctionUi::RolesController < SanctionUi::AuthController
             if bypass_hash[:collection_method].kind_of? Symbol
               role_def.principals.each do |principal|
                 principal_klass = principal.constantize
-                if principal_klass.respond_to? bypass_hash[:collection_method]                  
-                  rows = principal_klass.send(bypass_hash[:collection_method], {:role_definition => role_def, :bypass_hash => bypass_hash})
+                if principal_klass.respond_to? bypass_hash[:collection_method]
+                  # This crap could be handy to the callee
+                  collection_method_params = [{:role_definition => role_def, :bypass_hash => bypass_hash}]
+                  # This :limit, makes the callee arg params feel named_scopey/.find-ish
+                  unless bypass_hash[:limit].blank?
+                    collection_method_params.first[:limit] = bypass_hash[:limit]
+                  end
+                  # Add any specific params set in initializer
+                  if bypass_hash[:collection_method_params].kind_of? Array 
+                    collection_method_params = bypass_hash[:collection_method_params] + collection_method_params
+                  end
+                  
+                  # Note the *collection_method call, expands the array in a fashion that jives with
+                  # a method defined like "def t(*args)"
+                  # See http://groups.google.com/group/rubyonrails-talk/browse_thread/thread/7900b011f5c53fe4?pli=1
+                  # for more details.
+                  rows = principal_klass.send(bypass_hash[:collection_method], *collection_method_params)
                   result_container = bypass_hash.dup
                   result_container[:rows] = rows.uniq #uniq needed for aggregation on permissionables
 
 
                   # Add a row count
-                  if principal_klass.respond_to? bypass_hash[:collection_count]
-                    result_container[:count] = principal_klass.send(bypass_hash[:collection_count])
+                  if bypass_hash[:collection_count].kind_of? TrueClass
+                    # use vanilla named_scope chaining, for example--would look like AppUser.employees_of(:any, :limit => 47).count
+                    result_container[:count] = principal_klass.send(bypass_hash[:collection_method], *collection_method_params).send(:count)
+                  elsif bypass_hash[:collection_count].kind_of? Symbol
+                    # use a special .count method that accepts the same parameters as the :collection_method
+                    if principal_klass.respond_to? bypass_hash[:collection_count]
+                      result_container[:count] = principal_klass.send(bypass_hash[:collection_count], *collection_method_params)
+                    end
                   end
-
                   # put permissionables somewhere sensible if needed (non-global)
                   #                  
                   if (not bypass_hash[:permissionable_collection_method].blank?) &&
