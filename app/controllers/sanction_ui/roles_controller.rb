@@ -33,29 +33,35 @@ class SanctionUi::RolesController < SanctionUi::AuthController
     
     # This below is a lil crazy--used to show when the permissions of the application
     # are being bypassed by other lists
-    # essentially, we're walking over each role def and seeing if there are named_scope bypasses
+    # essentially, we're walking over each role def and seeing if there are role_bypasses
     # on any given principal 
-    @bypass_principals_for_role_definition = {}
-    unless SanctionUi.bypass_named_scopes.empty?
+    @role_bypasses = {}
+    unless SanctionUi.role_bypasses.empty?
       Sanction::Role::Definition.all_roles.each do |role_def|
-        if (not SanctionUi.bypass_named_scopes[role_def.name].blank?) && SanctionUi.bypass_named_scopes[role_def.name].kind_of?(Array)
-          SanctionUi.bypass_named_scopes[role_def.name].each do |bypass_hash|
-            if bypass_hash[:named_scope].kind_of? Symbol
+        if (not SanctionUi.role_bypasses[role_def.name].blank?) && SanctionUi.role_bypasses[role_def.name].kind_of?(Array)
+          SanctionUi.role_bypasses[role_def.name].each do |bypass_hash|
+            if bypass_hash[:collection_method].kind_of? Symbol
               role_def.principals.each do |principal|
                 principal_klass = principal.constantize
-                if principal_klass.respond_to? bypass_hash[:named_scope]                  
-                  results = principal_klass.send(bypass_hash[:named_scope], {:role_definition => role_def, :bypass_hash => bypass_hash})
+                if principal_klass.respond_to? bypass_hash[:collection_method]                  
+                  rows = principal_klass.send(bypass_hash[:collection_method], {:role_definition => role_def, :bypass_hash => bypass_hash})
                   result_container = bypass_hash.dup
-                  result_container[:results] = results
-                  if @bypass_principals_for_role_definition[role_def.name].kind_of? Array
-                    @bypass_principals_for_role_definition[role_def.name] << result_container
+                  result_container[:rows] = rows
+                  if @role_bypasses[role_def.name].kind_of? Array
+                    @role_bypasses[role_def.name] << result_container
                   else
-                    @bypass_principals_for_role_definition[role_def.name] = [result_container]
+                    @role_bypasses[role_def.name] = [result_container]
                   end
+                  
+                  if principal_klass.respond_to? bypass_hash[:collection_count]
+                    result_container[:count] = principal_klass.send(bypass_hash[:collection_count])
+                  end
+                  
+                  
                 end
               end
             else
-              raise "only know how to do stuff with symbol refs for :named_scope, you had #{bypass_hash[:named_scope]}"
+              raise "only know how to do stuff with symbol refs for :collection_method, you had #{bypass_hash[:collection_method]}"
             end
           end          
         end

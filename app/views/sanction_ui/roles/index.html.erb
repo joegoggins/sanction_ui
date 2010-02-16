@@ -18,11 +18,18 @@
 	    <ul>
 	    <%= render :partial => 'role_instance', :collection => role_instances_for_global_role(@roles, role_definition), :as => :role, :locals => {:role_definition => role_definition} %>
 	
-	    <%- unless @bypass_principals_for_role_definition[role_definition.name].blank? -%>
-	      <%- @bypass_principals_for_role_definition[role_definition.name].each do |result_container| -%>
-	        <li><%= result_container[:label] %>
+	    <%- unless @role_bypasses[role_definition.name].blank? -%>
+	      <%- @role_bypasses[role_definition.name].each do |bypass_hash| -%>
+	        <li><%= bypass_hash[:label] %>
+		          <%- unless bypass_hash[:count].blank? -%>
+		            (showing top <%= bypass_hash[:limit] %> of <%= bypass_hash[:count] %>)
+							<%- end -%>
 			      <ul>
-							<%= render :partial => 'bypass_principal', :collection => result_container[:results], :as => :principal, :locals => {:role_definition => role_definition} %>
+				      <%- if role_definition.global? -%>
+				        <li>Role Bypass not implemented yet for global permissions</li>
+				<%- else -%>
+							<%= render :partial => 'bypass_principal', :collection => bypass_hash[:rows], :as => :principal, :locals => {:role_definition => role_definition} %>
+							<%- end -%>
 				    </ul>
 			    </li>
 	      <%- end -%>
