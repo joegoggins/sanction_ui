@@ -44,7 +44,9 @@ module SanctionUi
        :permissionable_all => "Check to add role over all instances of this type",
        :access_denied => 'Access Denied',
        # What gets shown in the title of pages
-       :sanction_ui_title => 'Permissions Management System'
+       :sanction_ui_title => 'Permissions Management System',
+       :roles_index_title => "Listing all permissions by role",
+       :roles_explicit_only_title => "Listing only explicitly granted permissions by role"
     }
     @@describe_on_deny = true
     @@describe_over_on_deny = true

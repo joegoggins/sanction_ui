@@ -1,5 +1,5 @@
 <div class="suiContainer" id="suiRolesListContainer">
-  <%= render :partial => "index_header", :locals => {:roles => @roles} -%>
+  <%= render :partial => "#{action_name}_header", :locals => {:roles => @roles} -%>
 	<ul>
 	<% Sanction::Role::Definition.all_roles.each do |role_definition| -%>
 	  <li>
@@ -17,22 +17,32 @@
 		</span>
 	    <ul>
 	    <%= render :partial => 'role_instance', :collection => role_instances_for_global_role(@roles, role_definition), :as => :role, :locals => {:role_definition => role_definition} %>
-	
-	    <%- unless @role_bypasses[role_definition.name].blank? -%>
-	      <%- @role_bypasses[role_definition.name].each do |bypass_hash| -%>
-	        <li><%= bypass_hash[:label] %>
-		          <%- unless bypass_hash[:count].blank? -%>
-		            (showing top <%= bypass_hash[:limit] %> of <%= bypass_hash[:count] %>)
-							<%- end -%>
-			      <ul>
-				      <%- if role_definition.global? -%>
-				        <li>Role Bypass not implemented yet for global permissions</li>
-				<%- else -%>
-							<%= render :partial => 'bypass_principal', :collection => bypass_hash[:rows], :as => :principal, :locals => {:role_definition => role_definition} %>
-							<%- end -%>
-				    </ul>
-			    </li>
-	      <%- end -%>
+	    <%- unless @role_bypasses.blank? -%>
+		    <%- unless @role_bypasses[role_definition.name].blank? -%>
+		      <%- @role_bypasses[role_definition.name].each do |bypass_hash| -%>
+		        <li><%= bypass_hash[:label] %>
+			          <%- unless bypass_hash[:count].blank? -%>
+			            (showing top <%= bypass_hash[:limit] > bypass_hash[:count] ? bypass_hash[:count] : bypass_hash[:limit] %> of <%= bypass_hash[:count] %> total)
+								<%- end -%>
+				      <ul>
+					      <%- render_collection_template = {
+						        :partial => nil, 
+						        :collection => bypass_hash[:rows], 
+						        :as => :principal, 
+						        :locals => {:role_definition => role_definition, 
+							                  :bypass_hash => bypass_hash}
+							      }  
+							  -%>
+					      <%- if role_definition.global? -%>
+					        <%- render_collection_template[:partial] = 'bypass_global'   -%>
+					      <%- else -%>
+					        <%- render_collection_template[:partial] = 'bypass_non_global'   -%>
+								<%- end -%>
+								<%= render render_collection_template %>
+					    </ul>
+				    </li>
+		      <%- end -%>
+		    <%- end -%>
 	    <%- end -%>
 	    </ul>
 	  </li>

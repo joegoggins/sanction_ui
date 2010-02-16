@@ -2,6 +2,10 @@ class SanctionUi::RolesController < SanctionUi::AuthController
   before_filter :load_role_definition, :only => [:new, :create]
   around_filter :catch_404ish_things
   
+  before_filter :collection_access_check, :only => [:index, :explicit_only]
+  before_filter :load_roles, :only => [:index, :explicit_only]
+  before_filter :load_role_bypasses, :only => [:index]
+  
   def load_role_definition
     @role_definition = Sanction::Role::Definition.all_roles.find do |x|
       x.name == params[:role_definition].to_sym
@@ -9,7 +13,7 @@ class SanctionUi::RolesController < SanctionUi::AuthController
 
     if @role_definition.blank?
       flash[:notice] = "Invalid role definition name"
-      redirect_to(sanction_ui_roles_path) and return
+      redirect_to(explicit_only_sanction_ui_roles_path) and return
     end
   end
   
@@ -18,23 +22,11 @@ class SanctionUi::RolesController < SanctionUi::AuthController
       yield
     rescue ActiveRecord::RecordNotFound
       flash[:notice] = "Record not found"
-      redirect_to sanction_ui_roles_path and return
+      redirect_to explicit_only_sanction_ui_roles_path and return
     end
   end  
-    
-  def index
-    
-    unless action_allowed? :can_view_permissions
-      set_access_denied_flash(:can_view_permissions)
-      redirect_to sanction_ui_access_denied_path and return false
-    end
-    # eager loaded for quick rendering
-    @roles = Sanction::Role.find(:all, :include => [:principal, :permissionable], :order => 'name')
-    
-    # This below is a lil crazy--used to show when the permissions of the application
-    # are being bypassed by other lists
-    # essentially, we're walking over each role def and seeing if there are role_bypasses
-    # on any given principal 
+  
+  def load_role_bypasses
     @role_bypasses = {}
     unless SanctionUi.role_bypasses.empty?
       Sanction::Role::Definition.all_roles.each do |role_def|
@@ -46,18 +38,37 @@ class SanctionUi::RolesController < SanctionUi::AuthController
                 if principal_klass.respond_to? bypass_hash[:collection_method]                  
                   rows = principal_klass.send(bypass_hash[:collection_method], {:role_definition => role_def, :bypass_hash => bypass_hash})
                   result_container = bypass_hash.dup
-                  result_container[:rows] = rows
+                  result_container[:rows] = rows.uniq #uniq needed for aggregation on permissionables
+
+
+                  # Add a row count
+                  if principal_klass.respond_to? bypass_hash[:collection_count]
+                    result_container[:count] = principal_klass.send(bypass_hash[:collection_count])
+                  end
+
+                  # put permissionables somewhere sensible if needed (non-global)
+                  #                  
+                  if (not bypass_hash[:permissionable_collection_method].blank?) &&
+                     principal_klass.instance_methods.include?(bypass_hash[:permissionable_collection_method].to_s)
+                    result_container[:rows].each do |principal_inst|
+                      # Injects a method into the principal instance that encapsulates the
+                      # permissionable collection instead of doing this logic in the view,
+                      # the view does .respond_to? :sanction_ui_permissionables to decide what to render
+                      principal_inst.instance_eval(<<-EOS,__FILE__,__LINE__)        #
+                        def sanction_ui_permissionables                             # def sanction_ui_permissionables
+                          #{bypass_hash[:permissionable_collection_method].to_s}    #   things_i_own
+                        end                                                         # end
+                      EOS
+                    end      
+                  end
+
+                  # This is what the view goes from
+                  #
                   if @role_bypasses[role_def.name].kind_of? Array
                     @role_bypasses[role_def.name] << result_container
                   else
                     @role_bypasses[role_def.name] = [result_container]
-                  end
-                  
-                  if principal_klass.respond_to? bypass_hash[:collection_count]
-                    result_container[:count] = principal_klass.send(bypass_hash[:collection_count])
-                  end
-                  
-                  
+                  end                  
                 end
               end
             else
@@ -67,6 +78,27 @@ class SanctionUi::RolesController < SanctionUi::AuthController
         end
       end
     end
+  end
+  
+  def collection_access_check
+    unless action_allowed? :can_view_permissions
+      set_access_denied_flash(:can_view_permissions)
+      redirect_to sanction_ui_access_denied_path and return false
+    end
+  end
+  
+  def load_roles
+    # eager loaded for quick rendering
+    @roles = Sanction::Role.find(:all, :include => [:principal, :permissionable], :order => 'name')
+  end
+  
+  def index
+    # All the magic done with before_filters
+  end
+  
+  def explicit_only
+    # All done with before_filters, doesn't include role_bypasses though
+    render :action => 'index'
   end
 
   def new
@@ -95,7 +127,7 @@ class SanctionUi::RolesController < SanctionUi::AuthController
     rescue NameError => e
       if @role_definition.blank?
         flash[:notice] = "Error: Invalid principal type class"
-        redirect_to(sanction_ui_roles_path) and return
+        redirect_to(explicit_only_sanction_ui_roles_path) and return
       end
     end
     
@@ -104,7 +136,7 @@ class SanctionUi::RolesController < SanctionUi::AuthController
         @principal_instance = @principal_class.find(params[:sanction_role][:principal_id])
       rescue ActiveRecord::RecordNotFound
         flash[:notice] = "Error: Could not find a #{params[:sanction_role][:principal_type]} principal instance with id=#{params[:sanction_role][:principal_id]}"
-        redirect_to sanction_ui_roles_path and return
+        redirect_to explicit_only_sanction_ui_roles_path and return
       end      
     else
       @principal_instance = @principal_class
@@ -113,7 +145,7 @@ class SanctionUi::RolesController < SanctionUi::AuthController
     if @role_definition.global?
       if @principal_instance.grant(@role_definition.name)
         flash[:notice] = "&quot;#{@role_definition.name.to_s.humanize}&quot; role successfully added."
-        redirect_to sanction_ui_roles_path and return
+        redirect_to explicit_only_sanction_ui_roles_path and return
       else
         flash[:notice] = 'Role could not be added, may already be assigned to this user, or is an inavlid ID.'
         render :action => 'new' and return
@@ -124,7 +156,7 @@ class SanctionUi::RolesController < SanctionUi::AuthController
       rescue NameError => e
         if @role_definition.blank?
           flash[:notice] = "Error: Invalid permissionable type class #{params[:sanction_role][:permissionable_type]}"
-          redirect_to(sanction_ui_roles_path) and return
+          redirect_to(explicit_only_sanction_ui_roles_path) and return
         end
       end
       
@@ -133,11 +165,11 @@ class SanctionUi::RolesController < SanctionUi::AuthController
           @permissionable_instance = @permissionable_class.find(params[:sanction_role][:permissionable_id])
         rescue ActiveRecord::RecordNotFound
           flash[:notice] = "Error: Could not find a #{params[:sanction_role][:permissionable_type]} permissionable instance with id=#{params[:sanction_role][:permissionable_id]}"
-          redirect_to sanction_ui_roles_path and return
+          redirect_to explicit_only_sanction_ui_roles_path and return
         end
         if @principal_instance.grant(@role_definition.name, @permissionable_instance)
           flash[:notice] = "&quot;#{@role_definition.name.to_s.humanize}&quot; role successfully added over #{@permissionable_instance.send(SanctionUi.permissionables_to_s_method)}"
-          redirect_to sanction_ui_roles_path and return
+          redirect_to explicit_only_sanction_ui_roles_path and return
         else
           flash[:notice] = 'Role could not be added, may already be assigned to this user, or is an inavlid ID.'
           render :action => 'new' and return
@@ -145,7 +177,7 @@ class SanctionUi::RolesController < SanctionUi::AuthController
       else
         if @principal_instance.grant(@role_definition.name, @permissionable_class)
           flash[:notice] = "&quot;#{@role_definition.name.to_s.humanize}&quot; role successfully added over all #{@permissionable_class.to_s.humanize.pluralize}"
-          redirect_to sanction_ui_roles_path and return
+          redirect_to explicit_only_sanction_ui_roles_path and return
         else
           flash[:notice] = 'Role could not be added, may already be assigned to this user.'
           render :action => 'new' and return
@@ -168,7 +200,7 @@ class SanctionUi::RolesController < SanctionUi::AuthController
     end
     
     respond_to do |format|
-      format.html { redirect_to(sanction_ui_roles_path) }
+      format.html { redirect_to(explicit_only_sanction_ui_roles_path) }
       format.json { flash[:notice] }
     end
   end

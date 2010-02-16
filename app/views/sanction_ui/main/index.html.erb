@@ -5,6 +5,9 @@
 <%= render :partial => "index_header" %>
 <h2>Options</h2>
 <ul>
-	<li><%= link_to "List People by Role", sanction_ui_roles_path %>: Who is responsible for what in this app?</li>
+	<li><%= link_to "Add/Remove Permissions", explicit_only_sanction_ui_roles_path %>: Show's only changeable permissions, faster and simpler than the &quot;List ALL&quot; option.</li>
+	
+	<li><%= link_to "List ALL Permissions", sanction_ui_roles_path %>: Show all ALL users who have access to the application.  Includes users that may have implicit roles based on application specific data in addition to explicitly granted privileges.</li>
+	
 </ul>
 </div>

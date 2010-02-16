@@ -7,6 +7,7 @@ ActionController::Routing::Routes.draw do |map|
     # flash[:sui_denied_over_type] and flash[:sui_denied_over_instance] can also be set
     sanction_ui.access_denied "denied", :controller => 'access_denied', :action => 'show'
     sanction_ui.resources :roles,
-      :only => [:index, :new, :create, :destroy]
+      :only => [:index, :new, :create, :destroy],
+      :collection => {:explicit_only => :get}
   end
 end

@@ -1,0 +1,14 @@
+<li>
+	<span class="suiRoleUser">
+    <%= SanctionUi.eval_name(principal) %>
+  </span>
+  <%- if principal.respond_to?(:sanction_ui_permissionables) && (not principal.sanction_ui_permissionables.empty?) -%>
+    <span class="suiRolePermissionbleDirection"><%= sui_label :over -%></span>
+
+    <ul>
+    <%- principal.sanction_ui_permissionables.each do |permissionable| -%>
+      <li><%= SanctionUi.eval_name(permissionable) %></li>
+    <%- end -%>
+    </ul>
+  <%- end -%>
+</li>
