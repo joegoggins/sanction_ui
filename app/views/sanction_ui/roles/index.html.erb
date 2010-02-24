@@ -22,7 +22,11 @@
 		      <%- @role_bypasses[role_definition.name].each do |bypass_hash| -%>
 		        <li><%= bypass_hash[:label] %>
 			          <%- unless bypass_hash[:count].blank? -%>
-			            (showing top <%= bypass_hash[:limit] > bypass_hash[:count] ? bypass_hash[:count] : bypass_hash[:limit] %> of <%= bypass_hash[:count] %> total)
+									<%- if bypass_hash[:limit].blank? -%>
+									(showing <%= bypass_hash[:count] %> total)
+									<%- else -%>
+									(showing top <%= bypass_hash[:limit] > bypass_hash[:count] ? bypass_hash[:count] : bypass_hash[:limit] %> of <%= bypass_hash[:count] %> total)
+									<%- end -%>
 								<%- end -%>
 				      <ul>
 					      <%- render_collection_template = {
