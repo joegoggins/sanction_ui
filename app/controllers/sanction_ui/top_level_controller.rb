@@ -38,7 +38,12 @@ class SanctionUi::TopLevelController < ApplicationController
       false # Probably un-authenticated
     else
       begin
-        current_principal.has?(sanction_permission)
+        if SanctionUi.assume_eager_loaded_principal_roles
+          permissions_check_method = :eager_has?
+        else
+          permissions_check_method = :has?
+        end
+        current_principal.send(permissions_check_method,sanction_permission)
       rescue NameError => e
         raise "Sanction Ui Error: current_principal method must return an object that responds to .has?
                This could be because you haven't added this returned object to the

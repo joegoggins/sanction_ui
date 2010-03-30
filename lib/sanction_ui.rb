@@ -14,7 +14,12 @@ module SanctionUi
   :denied_contact_label,
   :denied_contact_email,  
   
-  :role_bypasses
+  :role_bypasses,
+  
+  # This affects the behavior of `redirect_to_access_denied_if_cannot` in your controllers and views
+  # if true this will change the permission check methodology to do things in memory via eager_has? and eager_has_over?
+  # instead of the named_scope based approach
+  :assume_eager_loaded_principal_roles
 
   mattr_reader :principal_to_s_methods, :permissionable_to_s_methods, :has_been_configured, :install_instructions, :special_permissions
   
@@ -55,6 +60,7 @@ module SanctionUi
     @@principal_to_s_methods = {} 
     @@permissionable_to_s_methods = {}
     @@role_bypasses = {}
+    @@assume_eager_loaded_principal_roles = true
 
     @@special_permissions = {
       :can_view_permissions => "Show the root page of sanction_ui AND

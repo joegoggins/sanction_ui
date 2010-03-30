@@ -17,7 +17,12 @@ module SanctionUi
           #   return false if redirect_to_access_denied_if_cannot(:can_index, Thing)
           def redirect_to_access_denied_if_cannot(permission_or_role, permissionable_class_or_instance=nil)
             if permissionable_class_or_instance.blank?
-              unless current_principal.has?(permission_or_role)
+              if SanctionUi.assume_eager_loaded_principal_roles
+                permissions_check_method = :eager_has?
+              else
+                permissions_check_method = :has?
+              end
+              unless current_principal.send(permissions_check_method, permission_or_role)
                 set_access_denied_flash(permission_or_role)
                 redirect_to(sanction_ui_access_denied_path) and return true
               end
@@ -29,7 +34,12 @@ module SanctionUi
                   redirect_to_access_denied_if_cannot(:can_jump, @a_new_thing)
                 "
               end
-              unless current_principal.has(permission_or_role).over?(permissionable_class_or_instance)
+              if SanctionUi.assume_eager_loaded_principal_roles
+                check_result = current_principal.eager_has_over?(permission_or_role,permissionable_class_or_instance)
+              else
+                check_result = current_principal.has(permission_or_role).over?(permissionable_class_or_instance)
+              end
+              unless check_result 
                 set_access_denied_flash(permission_or_role, permissionable_class_or_instance)
                 redirect_to(sanction_ui_access_denied_path) and return true
               end
