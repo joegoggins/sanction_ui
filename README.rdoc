@@ -1,7 +1,21 @@
-Sanction UI
-===========
-Sanction UI is a Graphical Interface Rails Engine to sit on top of your Sanction settings, allowing
-* easy control and management of your users and permissions.
+= Sanction UI: A front-end for {Sanction}[http://github.com/joegoggins/sanction]
+
+Sanction UI is a Rails Engine (plugin) permissions management front-end that sits on top of Sanction, a role based permissions management back-end.
+
+SanctionUi is like `script/generate scaffold` for permissions management.
+
+After running `script/generate sanction_ui`, your app will respond to a "/permissions" URL, from here, the plugin provides
+boilerplate views and controller behaviors that can be overridden to do almost anything.  Alternatively, if you're a bit more of a cow-boy developer, instead of customizing sanction_ui the way it's intended, you can always steal sanction_ui controller or view code from the plugin and build your own permissions management front-end from scratch.
+
+The plugin also provides a very handy helper method you can use in your controllers to do this kind of thing:
+
+  def show
+    @magazine = Magazine.find(params[:id])
+    return false if redirect_to_access_denied_if_cannot(:can_show, @magazine)
+  end
+
+== Features
+* Simple installation: Run the generator, add a :permission_manager role your sanction.rb initializer, assign the role to you, and hit "/permissions" URL
 * a simple one line methodology of redirecting to access denied from any controller in your app
 * the ability to implement specialized delegation of permission management, i.e. 
   * super_users can create any other user, no-one else can.
@@ -9,13 +23,13 @@ Sanction UI is a Graphical Interface Rails Engine to sit on top of your Sanction
 * User friendly access denied page for known [authenticated] users
 * Human friendly description's of the access control system
 
+== Dependencies
+* http://github.com/joegoggins/sanction 
+  * Eventually, I hope to merge this into http://github.com/matthewvermaak/sanction, this is where this project was forked from. 
+    As of 2010-05-13, I have been working with Matt and Pete to see if this merge is possible, seems likely.
+    Right now http://github.com/joegoggins/sanction_ui requires http://github.com/joegoggins/sanction
 
-Dependencies
-============
-* http://github.com/joegoggins/sanction
-
-App Requirements
-================
+== Requirements
 * You have a globally accessible method, :current_principal, in controllers and views that
   yields an instance of a Sanction principal class.  This is typically your currently
   logged in user loaded via authentication.  It must NOT return nil ever, in that case
@@ -25,13 +39,63 @@ App Requirements
 	  end
 	  helper_method :current_principal
 
-* All principal and permissionable classes need to specify a method that
-  SanctionUi can use to render their "name", see config/initializers/sanction_ui.rb for
-  examples.
-
-Install
-===========
+== Install
 * Get http://github.com/joegoggins/sanction and http://github.com/joegoggins/sanction_ui
 * script/generate sanction
 * script/generate sanction_ui
 * Follow the simple instructions given by the sanction_ui generator.
+
+== Configuration Details
+* The permissions associated with access to SanctionUi controllers are managed by Sanction proper.
+  Apps that use Sanction + SanctionUi have something like this in their sanction.rb initializer:
+    config.role :permission_manager, AppUser => :global, 
+       :having => [:can_add_role, :can_view_permissions, :can_remove_role,:can_describe_role], 
+       :purpose => "to manage who can access what in the application"
+
+  Access to anything in the UI is dependent on your `current_principal` user having one of these roles.
+  If you haven't assigned the :permission_manager role to any Principal via the console or a migration,
+  you will get an "access denied" when you go to "/permissions"
+  
+* If you want to utilize the handy redirect_to_access_denied_if_cannot method mentioned above, put this in your ApplicationController:
+    include SanctionUi::ApplicationController::Helpers
+    
+* The SanctionUi controller inheritance hierarchy is structured as follows:
+    ActionController::Base                      (Rails)
+      ApplicationController                     (App)
+        SanctionUi::TopLevelController          (Plugin)
+          SanctionUi::AccessDeniedController    (Plugin)
+          SanctionUi::AssetController           (Plugin)
+          SanctionUi::AuthController            (App: Created by `script/generate sanction_ui, you should override stuff here)
+            SanctionUi::MainController          (Plugin)
+            SanctionUi::RolesController         (Plugin)
+
+  SanctionUi protects the attribution of roles by doing something like:
+    action_allowed_for_role?(:can_add_role, @a_sanction_role_instance)
+  and
+    action_allowed_for_role_definition?(:can_add_role, @a_sanction_role_definition_instance)
+    
+  You can and should override these in the SanctionUi::AuthController to implement logic such as:
+    * super_users can create any other user, no-one else can.
+    * my client cannot be deleted from the permissions system
+  
+  There are commented out examples in SanctionUi::AuthController to get you a head start
+  
+* To get human friendly names to appear instead of Permissionable or Principal IDs, add something like:
+    config.set_principal_to_s_method(Person,"name_display(:full)")
+    config.set_permissionable_to_s_method(Thing,"name")
+
+  to your <em>sanction_ui.rb</em> (NOT sanction.rb) initializer
+
+* Any view page, partial, or css asset can be overridden by simply placing the the file in your app with the same relative
+  path thats used in the plugin, aka to override:
+    vendor/plugins/sanction_ui/app/views/sanction_ui/main/index.html.erb
+  you would copy that file into:
+    app/views/sanction_ui/main/index.html.erb
+  then make your desired changes
+  
+* There are a bunch of other overridable options commented out in the sanction_ui.rb initializer, and also displayed when you run the `script/generate sanction_ui` generator--for more information, install the plugin and continue exploring.
+
+== Comments/Questions
+Let me know: joe.goggins {at} gmail [dot] com
+
+Copyright (c) 2009 Joe Goggins released under the MIT license
