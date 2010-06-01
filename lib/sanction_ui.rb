@@ -60,7 +60,7 @@ module SanctionUi
     @@principal_to_s_methods = {} 
     @@permissionable_to_s_methods = {}
     @@role_bypasses = {}
-    @@assume_eager_loaded_principal_roles = true
+    @@assume_eager_loaded_principal_roles = false # TODO: deprecate
 
     @@special_permissions = {
       :can_view_permissions => "Show the root page of sanction_ui AND
