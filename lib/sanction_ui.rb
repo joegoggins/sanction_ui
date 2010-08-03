@@ -19,7 +19,15 @@ module SanctionUi
   # This affects the behavior of `redirect_to_access_denied_if_cannot` in your controllers and views
   # if true this will change the permission check methodology to do things in memory via eager_has? and eager_has_over?
   # instead of the named_scope based approach
-  :assume_eager_loaded_principal_roles
+  :assume_eager_loaded_principal_roles,
+  
+  # Sanction allows weird things like AppUser.grant(:some_role), which then allows ALL AppUser rows
+  # to have that role--it's kind of weird, and will likely be deprecated in future releases, it's confusing
+  # and does not need UI (i dont think), sanction_ui does process this option via the principal_all and permissionable_all partials,
+  # Since its confusing, I'm adding this to ignore
+  # 
+  :disable_principal_blanket_attribution,
+  :disable_permissionable_blanket_attribution
 
   mattr_reader :principal_to_s_methods, :permissionable_to_s_methods, :has_been_configured, :install_instructions, :special_permissions
   
@@ -60,8 +68,10 @@ module SanctionUi
     @@principal_to_s_methods = {} 
     @@permissionable_to_s_methods = {}
     @@role_bypasses = {}
-    @@assume_eager_loaded_principal_roles = false # TODO: deprecate
-
+    @@assume_eager_loaded_principal_roles = false # TODO: deprecate        
+    @@disable_principal_blanket_attribution = true
+    @@disable_permissionable_blanket_attribution = true
+    
     @@special_permissions = {
       :can_view_permissions => "Show the root page of sanction_ui AND
       The main roles/index page where permissions management happens.

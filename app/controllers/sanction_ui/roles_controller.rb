@@ -151,7 +151,7 @@ class SanctionUi::RolesController < SanctionUi::AuthController
       end
     end
     
-    if params[:principal_all].blank?
+    if SanctionUi.disable_principal_blanket_attribution || params[:principal_all].blank?
       begin
         @principal_instance = @principal_class.find(params[:sanction_role][:principal_id])
       rescue ActiveRecord::RecordNotFound
@@ -180,7 +180,7 @@ class SanctionUi::RolesController < SanctionUi::AuthController
         end
       end
       
-      if params[:permissionable_all].blank?
+      if SanctionUi.disable_permissionable_blanket_attribution || params[:permissionable_all].blank?
         begin
           @permissionable_instance = @permissionable_class.find(params[:sanction_role][:permissionable_id])
         rescue ActiveRecord::RecordNotFound

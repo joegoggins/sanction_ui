@@ -1,2 +1,4 @@
-<%= form.label :principal_all, sui_label(:principal_all) %>
-<%= check_box_tag :principal_all %>
+<%- unless SanctionUi.disable_principal_blanket_attribution -%>
+  <%= form.label :principal_all, sui_label(:principal_all) %>
+  <%= check_box_tag :principal_all %>
+<%- end -%>

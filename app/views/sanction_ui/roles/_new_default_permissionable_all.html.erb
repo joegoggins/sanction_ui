@@ -1,2 +1,4 @@
-<%= form.label :permissionable_all, sui_label(:permissionable_all) %>
-<%= check_box_tag :permissionable_all %>
+<%- unless SanctionUi.disable_permissionable_blanket_attribution -%>
+	<%= form.label :permissionable_all, sui_label(:permissionable_all) %>
+	<%= check_box_tag :permissionable_all %>
+<%- end -%>
